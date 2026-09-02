@@ -10,10 +10,10 @@ public class MarcaRepository : IMarcaRepository
 
     public MarcaRepository()
     {
-        // Datos iniciales de ejemplo
-        Create(new Marca { Nombre = "Genérico", DiscountPercentage = 0 });
-        Create(new Marca { Nombre = "Económica", DiscountPercentage = 5 });
-        Create(new Marca { Nombre = "Premium", DiscountPercentage = 10 });
+        // Datos iniciales de ejemplo (agregar Descripcion)
+        Create(new Marca { Nombre = "Genérico", Descripcion = "Marca genérica", DiscountPercentage = 0 });
+        Create(new Marca { Nombre = "Económica", Descripcion = "Marca con precios bajos", DiscountPercentage = 5 });
+        Create(new Marca { Nombre = "Premium", Descripcion = "Marca de alta gama", DiscountPercentage = 10 });
     }
 
     public Marca Create(Marca marca)

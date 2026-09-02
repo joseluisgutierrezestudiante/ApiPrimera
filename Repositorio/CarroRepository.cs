@@ -31,6 +31,8 @@ public class CarroRepository : ICarroRepository
         carro.Marca = marca;
         ApplyDiscount(carro, marca);
         _carros.Add(carro);
+        // Asociar el carro a la colección de la marca
+        if (!marca.Carros.Contains(carro)) marca.Carros.Add(carro);
         return carro;
     }
 
@@ -38,6 +40,12 @@ public class CarroRepository : ICarroRepository
     {
         var c = GetById(id);
         if (c == null) return false;
+        // Remover de la lista de la marca si existe
+        var marca = c.Marca ?? _marcaRepo.GetById(c.MarcaId);
+        if (marca != null)
+        {
+            marca.Carros.Remove(c);
+        }
         return _carros.Remove(c);
     }
 
@@ -69,6 +77,21 @@ public class CarroRepository : ICarroRepository
         if (existing == null) return false;
         var marca = _marcaRepo.GetById(carro.MarcaId);
         if (marca == null) throw new ArgumentException("Marca no encontrada.");
+        // Si la marca cambió, actualizar las colecciones de marcas
+        if (existing.MarcaId != carro.MarcaId)
+        {
+            var oldMarca = _marcaRepo.GetById(existing.MarcaId);
+            if (oldMarca != null)
+            {
+                oldMarca.Carros.Remove(existing);
+            }
+            if (!marca.Carros.Contains(existing))
+            {
+                // actualizar referencia antes de añadir
+                existing.Marca = marca;
+                marca.Carros.Add(existing);
+            }
+        }
 
         existing.Modelo = carro.Modelo;
         existing.Precio = carro.Precio;
