@@ -1,6 +1,3 @@
-using ApiPrimera.Interfaces;
-using ApiPrimera.Repositorio;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,8 +6,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<IMarcaRepository, MarcaRepository>();
-builder.Services.AddSingleton<ICarroRepository, CarroRepository>();
+// Repositorio en memoria simple: los controladores usan listas estáticas en Data/InMemoryData.cs
 
 var app = builder.Build();
 

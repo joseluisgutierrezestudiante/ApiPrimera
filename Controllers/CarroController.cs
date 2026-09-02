@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using ApiPrimera.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using ApiPrimera.Models;
+using ApiPrimera.Data;
 
 namespace ApiPrimera.Controllers;
 
@@ -8,59 +9,67 @@ namespace ApiPrimera.Controllers;
 [Route("api/[controller]")]
 public class CarroController : ControllerBase
 {
-    private readonly ICarroRepository _repo;
-
-    public CarroController(ICarroRepository repo)
-    {
-        _repo = repo;
-    }
+    // Controlador simple que actúa directamente sobre InMemoryData
 
     [HttpGet]
-    public ActionResult<IEnumerable<Carro>> GetAll() => Ok(_repo.GetAll());
+    public ActionResult<IEnumerable<Carro>> GetAll() => Ok(InMemoryData.Carros);
 
     [HttpGet("{id}")]
     public ActionResult<Carro> Get(int id)
     {
-        var c = _repo.GetById(id);
+        var c = InMemoryData.Carros.FirstOrDefault(x => x.Id == id);
         if (c == null) return NotFound();
+        // incluir información de la marca en la respuesta
+        c.Marca = InMemoryData.Marcas.FirstOrDefault(m => m.Id == c.MarcaId);
         return Ok(c);
     }
 
     [HttpPost]
-    public ActionResult<Carro> Create(Carro carro)
+    public ActionResult<Carro> Create([FromBody] Carro carro)
     {
-        try
-        {
-            var created = _repo.Create(carro);
-            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var marca = InMemoryData.Marcas.FirstOrDefault(m => m.Id == carro.MarcaId);
+        if (marca == null) return BadRequest(new { error = "La marca indicada no existe." });
+
+        carro.Id = InMemoryData.Carros.Any() ? InMemoryData.Carros.Max(c => c.Id) + 1 : 1;
+        carro.Marca = marca;
+        // aplicar descuento automáticamente según la marca
+        var pct = marca.DiscountPercentage;
+        carro.PrecioConDescuento = Math.Round(carro.Precio * (1 - pct / 100m), 2);
+
+        InMemoryData.Carros.Add(carro);
+        return CreatedAtAction(nameof(Get), new { id = carro.Id }, carro);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Carro carro)
+    public IActionResult Update(int id, [FromBody] Carro carro)
     {
-        if (id != carro.Id) return BadRequest();
-        try
-        {
-            var ok = _repo.Update(carro);
-            if (!ok) return NotFound();
-            return NoContent();
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var existing = InMemoryData.Carros.FirstOrDefault(x => x.Id == id);
+        if (existing == null) return NotFound();
+
+        var marca = InMemoryData.Marcas.FirstOrDefault(m => m.Id == carro.MarcaId);
+        if (marca == null) return BadRequest(new { error = "La marca indicada no existe." });
+
+        existing.Modelo = carro.Modelo;
+        existing.Color = carro.Color;
+        existing.Placa = carro.Placa;
+        existing.Precio = carro.Precio;
+        existing.MarcaId = carro.MarcaId;
+        existing.Marca = marca;
+        var pct = marca.DiscountPercentage;
+        existing.PrecioConDescuento = Math.Round(existing.Precio * (1 - pct / 100m), 2);
+
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var ok = _repo.Delete(id);
-        if (!ok) return NotFound();
+        var existing = InMemoryData.Carros.FirstOrDefault(x => x.Id == id);
+        if (existing == null) return NotFound();
+        InMemoryData.Carros.Remove(existing);
         return NoContent();
     }
 }
