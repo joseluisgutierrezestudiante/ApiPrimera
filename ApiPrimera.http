@@ -3,4 +3,3 @@
 GET {{ApiPrimera_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
