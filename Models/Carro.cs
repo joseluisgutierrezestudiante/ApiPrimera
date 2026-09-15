@@ -13,4 +13,6 @@ public class Carro
     public decimal PrecioConDescuento { get; set; }
     // Relación: cada carro pertenece a una única marca (Id)
     public int MarcaId { get; set; }
+    // Información de la marca incluida en la respuesta
+    public Marca? Marca { get; set; }
 }
