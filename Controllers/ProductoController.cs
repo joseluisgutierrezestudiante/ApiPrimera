@@ -34,9 +34,9 @@ public class ProductoController : ControllerBase
     public async Task<ActionResult<Producto>> Create([FromBody] Producto producto)
     {
         // validaciones básicas
-        if (string.IsNullOrWhiteSpace(producto.Nombre)) return BadRequest(new { error = "El nombre es obligatorio." });
-        if (producto.Precio < 0) return BadRequest(new { error = "El precio no puede ser negativo." });
-        if (producto.Stock < 0) return BadRequest(new { error = "El stock no puede ser negativo." });
+        if (string.IsNullOrWhiteSpace(producto.Nombre)) return BadRequest("El nombre es obligatorio.");
+        if (producto.Precio < 0) return BadRequest("El precio no puede ser negativo.");
+        if (producto.Stock < 0) return BadRequest("El stock no puede ser negativo.");
 
         var created = await _repo.CreateAsync(producto);
         return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
@@ -46,9 +46,9 @@ public class ProductoController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] Producto producto)
     {
         if (id != producto.Id) return BadRequest();
-        if (string.IsNullOrWhiteSpace(producto.Nombre)) return BadRequest(new { error = "El nombre es obligatorio." });
-        if (producto.Precio < 0) return BadRequest(new { error = "El precio no puede ser negativo." });
-        if (producto.Stock < 0) return BadRequest(new { error = "El stock no puede ser negativo." });
+        if (string.IsNullOrWhiteSpace(producto.Nombre)) return BadRequest("El nombre es obligatorio.");
+        if (producto.Precio < 0) return BadRequest("El precio no puede ser negativo.");
+        if (producto.Stock < 0) return BadRequest("El stock no puede ser negativo.");
 
         var ok = await _repo.UpdateAsync(producto);
         if (!ok) return NotFound();

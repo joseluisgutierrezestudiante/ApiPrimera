@@ -29,7 +29,7 @@ public class CarroController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var marca = InMemoryData.Marcas.FirstOrDefault(m => m.Id == carro.MarcaId);
-        if (marca == null) return BadRequest(new { error = "La marca indicada no existe." });
+        if (marca == null) return BadRequest("La marca indicada no existe.");
 
         carro.Id = InMemoryData.Carros.Any() ? InMemoryData.Carros.Max(c => c.Id) + 1 : 1;
         carro.Marca = marca;
@@ -49,7 +49,7 @@ public class CarroController : ControllerBase
         if (existing == null) return NotFound();
 
         var marca = InMemoryData.Marcas.FirstOrDefault(m => m.Id == carro.MarcaId);
-        if (marca == null) return BadRequest(new { error = "La marca indicada no existe." });
+        if (marca == null) return BadRequest("La marca indicada no existe.");
 
         existing.Modelo = carro.Modelo;
         existing.Color = carro.Color;
