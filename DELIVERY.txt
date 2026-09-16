@@ -1,0 +1,8 @@
+Repositorio: https://github.com/joseluisgutierrezestudiante/ApiPrimera.git
+Integrante 1: Joseluis Gutierrez Machado
+Integrante 2: (ninguno, entrega individual)
+
+Descripción: Proyecto Taller 2 - CRUD de Productos con Entity Framework Core y MySQL.
+Contiene: modelo Producto, DbContext, repositorio e interfaz, controlador, migraciones y archivo de configuración de desarrollo (placeholder).
+
+Nota: No incluye credenciales reales. Rellena appsettings.Development.json con tu cadena de conexión local antes de ejecutar las migraciones.
