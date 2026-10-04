@@ -1,0 +1,35 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Inicio de Sesión - ApiPrimera Store";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Iniciar Sesión</button>
+                </form>
+
+                <hr>
+
+                <p class="text-center">
+                    ¿No tienes una cuenta? 
+                    <a href="/registro">Regístrate aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
