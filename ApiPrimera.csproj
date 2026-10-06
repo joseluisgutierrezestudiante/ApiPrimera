@@ -32,10 +32,4 @@
     <EmbeddedResource Remove="ApiPrimera.Tests\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controller\" />
-    <Folder Include="interface\" />
-    <Folder Include="Repositorio\" />
-  </ItemGroup>
-
 </Project>

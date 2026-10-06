@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@cloudinary/ng": "^2.1.6",
-    "@cloudinary/url-gen": "^1.22.0",
-    "axios": "^1.20.0"
-  }
-}

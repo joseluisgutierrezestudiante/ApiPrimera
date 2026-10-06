@@ -478,3 +478,8 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Frontend npm accidental (este proyecto no compila JS)
+package.json
+package-lock.json
+
