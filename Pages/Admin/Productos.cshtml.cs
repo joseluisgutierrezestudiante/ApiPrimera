@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ApiPrimera.Pages.Admin;
 
+[Microsoft.AspNetCore.Authorization.Authorize]
+
 public class ProductosModel : PageModel
 {
     private readonly IProductoApiClient _api;

@@ -17,12 +17,9 @@
 
             <div class="card auth-card shadow-sm">
                 <div class="card-body p-4">
-                    @if (Model.Aviso is not null)
+                    @if (ViewData.ModelState.ErrorCount > 0)
                     {
-                        <div class="alert alert-info d-flex align-items-start gap-2 small" role="alert">
-                            <i class="bi bi-info-circle-fill"></i>
-                            <span>@Model.Aviso</span>
-                        </div>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger small mb-3" role="alert"></div>
                     }
 
                     <form method="post" asp-page="/Registro">
@@ -79,10 +76,6 @@
                             <i class="bi bi-person-check me-2"></i>Crear mi cuenta
                         </button>
                     </form>
-
-                    <p class="text-center text-body-secondary small mt-3 mb-0">
-                        El registro todavia no esta conectado al sistema de usuarios.
-                    </p>
                 </div>
             </div>
 

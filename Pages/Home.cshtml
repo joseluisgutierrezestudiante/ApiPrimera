@@ -49,6 +49,14 @@
 </section>
 
 <section class="container pb-5">
+    @if (TempData["Mensaje"] is string mensaje)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@mensaje</span>
+        </div>
+    }
+
     <div class="row g-4">
         <div class="col-lg-3">
             <form method="get" asp-page="/Home" class="toolbar p-3 d-grid gap-3" id="catalogo">

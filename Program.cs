@@ -3,6 +3,7 @@ using ApiPrimera.Interfaces;
 using ApiPrimera.Repository;
 using ApiPrimera.Services;
 using ApiPrimera.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 const string CorsPolicy = "AllowFrontend";
@@ -46,6 +47,32 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 46))));
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 
+// Autenticación con ASP.NET Core Identity (cookies de sesión sobre MySQL).
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
+    {
+        opciones.Password.RequiredLength = 8;
+        opciones.Password.RequireDigit = true;
+        opciones.Password.RequireUppercase = true;
+        opciones.Password.RequireLowercase = true;
+        opciones.Password.RequireNonAlphanumeric = false;
+
+        opciones.User.RequireUniqueEmail = true;
+
+        opciones.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        opciones.Lockout.MaxFailedAccessAttempts = 5;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(opciones =>
+{
+    opciones.LoginPath = "/Login";
+    opciones.LogoutPath = "/Logout";
+    opciones.AccessDeniedPath = "/Login";
+    opciones.ExpireTimeSpan = TimeSpan.FromDays(7);
+    opciones.SlidingExpiration = true;
+});
+
 // Configurar Cloudinary (subida de imágenes)
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));
@@ -80,6 +107,8 @@ app.UseCors(CorsPolicy);
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
