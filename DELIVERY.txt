@@ -2,7 +2,26 @@ Repositorio: https://github.com/joseluisgutierrezestudiante/ApiPrimera.git
 Integrante 1: Joseluis Gutierrez Machado
 Integrante 2: (ninguno, entrega individual)
 
-Descripción: Proyecto Taller 2 - CRUD de Productos con Entity Framework Core y MySQL.
-Contiene: modelo Producto, DbContext, repositorio e interfaz, controlador, migraciones y archivo de configuración de desarrollo (placeholder).
+Descripcion: Proyecto Taller 3 - API REST de productos con ASP.NET Core,
+Entity Framework Core y MySQL, mas un frontend en Razor Pages que consume esa API.
 
-Nota: No incluye credenciales reales. Rellena appsettings.Development.json con tu cadena de conexión local antes de ejecutar las migraciones.
+Flujo de imagen:
+Producto -> Imagen -> Cloudinary -> URL -> API -> Frontend
+
+- El formulario de /Admin/Producto sube el archivo por multipart/form-data.
+- Cloudinary devuelve la SecureUrl y solo esa URL se guarda en Producto.ImagenUrl.
+- El endpoint de imagen es el unico que escribe ImagenUrl, de modo que un PUT
+  nunca deja un archivo huerfano en Cloudinary.
+- El frontend pinta la URL que devuelve la API.
+
+Pruebas: 71 pruebas en verde con dotnet test (no requieren MySQL).
+
+Como ejecutar:
+1. dotnet restore
+2. Configurar la cadena de conexion con user-secrets (ver README).
+3. dotnet ef database update
+4. dotnet run
+
+Nota: no se incluyen credenciales reales. Rellena la conexion con user-secrets
+antes de ejecutar las migraciones. Cloudinary es opcional; sin configurarlo, la
+app guarda la URL de origen de las imagenes del catalogo de ejemplo.

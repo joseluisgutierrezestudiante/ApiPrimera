@@ -1,0 +1,199 @@
+@page "/Admin/Producto"
+@model ApiPrimera.Pages.Admin.ProductoModel
+@{
+    var esNuevo = Model.Input.EsNuevo;
+    ViewData["Title"] = esNuevo ? "Nuevo producto" : "Editar producto";
+    var cultura = System.Globalization.CultureInfo.GetCultureInfo("es-CO");
+}
+
+<div class="container py-4">
+    <nav aria-label="Migas de pan">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-page="/Admin/Productos">Administrar productos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @(esNuevo ? "Nuevo" : Model.Input.Nombre)
+            </li>
+        </ol>
+    </nav>
+
+    <h1 class="h3 mb-4">@(esNuevo ? "Nuevo producto" : "Editar producto")</h1>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>@Model.Error
+        </div>
+    }
+
+    <form method="post" enctype="multipart/form-data" asp-page="/Admin/Producto"
+          asp-route-id="@(esNuevo ? null : Model.Input.Id)">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="panel p-4">
+                    <h2 class="h5 mb-3">Datos del producto</h2>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" asp-for="Input.Nombre"></label>
+                        <input class="form-control" asp-for="Input.Nombre" maxlength="120" />
+                        <span class="text-danger small" asp-validation-for="Input.Nombre"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" asp-for="Input.Descripcion"></label>
+                        <textarea class="form-control" asp-for="Input.Descripcion" rows="3" maxlength="1000"></textarea>
+                        <span class="text-danger small" asp-validation-for="Input.Descripcion"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" asp-for="Input.Marca"></label>
+                            <input class="form-control" asp-for="Input.Marca" list="listaMarcas" maxlength="60" />
+                            <datalist id="listaMarcas">
+                                @foreach (var marca in Model.Input.MarcasConocidas)
+                                {
+                                    <option value="@marca"></option>
+                                }
+                            </datalist>
+                            <span class="text-danger small" asp-validation-for="Input.Marca"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" asp-for="Input.Categoria"></label>
+                            <input class="form-control" asp-for="Input.Categoria" list="listaCategorias" maxlength="60" />
+                            <datalist id="listaCategorias">
+                                @foreach (var categoria in Model.Input.CategoriasConocidas)
+                                {
+                                    <option value="@categoria"></option>
+                                }
+                            </datalist>
+                            <span class="text-danger small" asp-validation-for="Input.Categoria"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-0">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" asp-for="Input.Anio"></label>
+                            <input class="form-control" asp-for="Input.Anio" type="number" />
+                            <span class="text-danger small" asp-validation-for="Input.Anio"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" asp-for="Input.Kilometraje"></label>
+                            <input class="form-control" asp-for="Input.Kilometraje" type="number" min="0" />
+                            <span class="text-danger small" asp-validation-for="Input.Kilometraje"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" asp-for="Input.Combustible"></label>
+                            <select class="form-select" asp-for="Input.Combustible">
+                                <option value="">Sin especificar</option>
+                                @foreach (var combustible in ApiPrimera.Models.ViewModels.ProductoFormViewModel.Combustibles)
+                                {
+                                    <option value="@combustible">@combustible</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold" asp-for="Input.Transmision"></label>
+                            <select class="form-select" asp-for="Input.Transmision">
+                                <option value="">Sin especificar</option>
+                                @foreach (var transmision in ApiPrimera.Models.ViewModels.ProductoFormViewModel.Transmisiones)
+                                {
+                                    <option value="@transmision">@transmision</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label fw-semibold" asp-for="Input.Color"></label>
+                        <input class="form-control" asp-for="Input.Color" maxlength="40" />
+                        <span class="text-danger small" asp-validation-for="Input.Color"></span>
+                    </div>
+                </div>
+
+                <div class="panel p-4 mt-4">
+                    <h2 class="h5 mb-3">Precio e inventario</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" asp-for="Input.Precio"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input class="form-control" asp-for="Input.Precio" type="number" step="0.01" min="0" />
+                            </div>
+                            <span class="text-danger small" asp-validation-for="Input.Precio"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" asp-for="Input.PrecioOriginal"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input class="form-control" asp-for="Input.PrecioOriginal" type="number" step="0.01" min="0" />
+                            </div>
+                            <span class="text-danger small" asp-validation-for="Input.PrecioOriginal"></span>
+                            <div class="form-text">Opcional: si es mayor al precio, se muestra el descuento.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold" asp-for="Input.Stock"></label>
+                            <input class="form-control" asp-for="Input.Stock" type="number" min="0" />
+                            <span class="text-danger small" asp-validation-for="Input.Stock"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" asp-for="Input.Destacado" />
+                        <label class="form-check-label" asp-for="Input.Destacado"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="panel p-4">
+                    <h2 class="h5 mb-3">Imagen</h2>
+                    <p class="text-body-secondary small">
+                        La imagen se sube a Cloudinary y solo se guarda su URL en la base de datos.
+                        JPG, PNG, WEBP, GIF o AVIF. Maximo 5 MB.
+                    </p>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Input.ImagenActual))
+                    {
+                        <img src="@Model.Input.ImagenActual" class="admin-preview mb-3"
+                             alt="Imagen actual de @Model.Input.Nombre" />
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="Input.QuitarImagen" />
+                            <label class="form-check-label" asp-for="Input.QuitarImagen">
+                                Quitar la imagen actual al guardar
+                            </label>
+                        </div>
+
+                        <hr />
+                    }
+
+                    <label class="form-label fw-semibold" asp-for="Input.Imagen"></label>
+                    <input class="form-control" asp-for="Input.Imagen" type="file"
+                           accept="image/jpeg,image/png,image/webp,image/gif,image/avif" />
+                    <span class="text-danger small" asp-validation-for="Input.Imagen"></span>
+                    <div class="form-text">Al elegir un archivo se reemplaza la imagen actual.</div>
+
+                    @if (esNuevo)
+                    {
+                        <div class="alert alert-secondary small mt-3 mb-0">
+                            El producto se creara primero y la imagen se subira despues.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-accent" type="submit">
+                <i class="bi bi-check-lg me-1"></i>Guardar
+            </button>
+            <a class="btn btn-outline-secondary" asp-page="/Admin/Productos">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

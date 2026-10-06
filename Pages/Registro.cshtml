@@ -1,45 +1,99 @@
+@page "/Registro"
+@model RegistroModel
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Registro - ApiPrimera Store";
+    ViewData["Title"] = "Crear cuenta";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title text-center mb-4">Crear Cuenta</h2>
-
-                <form method="post">
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 mb-3">Registrarse</button>
-                </form>
-
-                <hr>
-
-                <p class="text-center">
-                    ¿Ya tienes una cuenta? 
-                    <a href="/login">Inicia sesión aquí</a>
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="text-center mb-4">
+                <span class="brand-mark brand-mark--lg mb-3"><i class="bi bi-person-plus-fill"></i></span>
+                <h1 class="h3 fw-bold mb-1">Crear cuenta</h1>
+                <p class="text-body-secondary mb-0">
+                    Registrate para guardar tus favoritos y comparar vehiculos.
                 </p>
             </div>
+
+            <div class="card auth-card shadow-sm">
+                <div class="card-body p-4">
+                    @if (Model.Aviso is not null)
+                    {
+                        <div class="alert alert-info d-flex align-items-start gap-2 small" role="alert">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>@Model.Aviso</span>
+                        </div>
+                    }
+
+                    <form method="post" asp-page="/Registro">
+                        <div class="mb-3">
+                            <label asp-for="Input.Nombre" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input asp-for="Input.Nombre" class="form-control" placeholder="Nombre completo"
+                                       autocomplete="name" />
+                            </div>
+                            <span asp-validation-for="Input.Nombre" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Input.Email" class="form-control" placeholder="tu@correo.com"
+                                       autocomplete="email" />
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Password" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input asp-for="Input.Password" class="form-control" placeholder="Minimo 8 caracteres"
+                                           autocomplete="new-password" />
+                                </div>
+                                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Input.ConfirmarPassword" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input asp-for="Input.ConfirmarPassword" class="form-control" placeholder="Repite la contrasena"
+                                           autocomplete="new-password" />
+                                </div>
+                                <span asp-validation-for="Input.ConfirmarPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-4 mb-4">
+                            <input class="form-check-input" type="checkbox" id="terminos" required />
+                            <label class="form-check-label small" for="terminos">
+                                Acepto los terminos y condiciones y el tratamiento de mis datos.
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-accent w-100 btn-lg">
+                            <i class="bi bi-person-check me-2"></i>Crear mi cuenta
+                        </button>
+                    </form>
+
+                    <p class="text-center text-body-secondary small mt-3 mb-0">
+                        El registro todavia no esta conectado al sistema de usuarios.
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center text-body-secondary mt-4">
+                &iquest;Ya tienes cuenta?
+                <a class="link-underline fw-semibold" asp-page="/Login">Inicia sesion</a>
+            </p>
         </div>
     </div>
-</div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

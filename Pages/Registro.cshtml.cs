@@ -1,3 +1,4 @@
+using ApiPrimera.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,19 +6,24 @@ namespace ApiPrimera.Pages;
 
 public class RegistroModel : PageModel
 {
+    [BindProperty]
+    public RegistroViewModel Input { get; set; } = new();
+
+    public string? Aviso { get; private set; }
+
     public void OnGet()
     {
+        Aviso = "Vista de muestra: el registro de usuarios se habilitara en una entrega posterior.";
     }
 
-    public IActionResult OnPost(string nombre, string email, string password, string confirmPassword)
+    public IActionResult OnPost()
     {
-        // Por ahora, solo redirige. No hay registro real en este taller.
-        if (password != confirmPassword)
+        if (!ModelState.IsValid)
         {
-            ModelState.AddModelError("", "Las contraseñas no coinciden.");
             return Page();
         }
 
-        return RedirectToPage("/login");
+        Aviso = "El formulario es visual por ahora: la creacion de cuentas se implementara mas adelante.";
+        return Page();
     }
 }

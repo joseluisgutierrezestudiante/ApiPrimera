@@ -1,68 +1,231 @@
+@page "/Home"
+@model HomeModel
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Inicio - ApiPrimera Store";
+    ViewData["Title"] = "Inicio";
+    var catalogo = Model.Catalogo;
 }
 
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <h4 class="alert-heading">¡Bienvenido a ApiPrimera Store!</h4>
-            <p>Aquí encontrarás los mejores productos. Explora nuestro catálogo y disfruta de las mejores ofertas.</p>
-        </div>
-    </div>
-</div>
-
-<h1 class="mb-4">Nuestros Productos</h1>
-
-<div class="row" id="productos-container">
-    <div class="col-12 text-center">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-    </div>
-</div>
-
-<script>
-    async function cargarProductos() {
-        try {
-            const response = await fetch('/api/producto');
-            if (!response.ok) throw new Error('Error al cargar productos');
-
-            const productos = await response.json();
-            const contenedor = document.getElementById('productos-container');
-            contenedor.innerHTML = '';
-
-            if (productos.length === 0) {
-                contenedor.innerHTML = '<div class="col-12"><p class="text-center text-muted">No hay productos disponibles.</p></div>';
-                return;
-            }
-
-            productos.forEach(producto => {
-                const card = document.createElement('div');
-                card.className = 'col-md-6 col-lg-4 mb-4';
-                card.innerHTML = `
-                    <div class="card h-100">
-                        <img src="${producto.imagenUrl || 'https://via.placeholder.com/300x200?text=Sin+Imagen'}" 
-                             class="card-img-top" alt="${producto.nombre}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">${producto.nombre}</h5>
-                            <p class="card-text text-muted">${producto.descripcion}</p>
-                            <p class="card-text"><strong>Precio:</strong> $${producto.precio.toFixed(2)}</p>
-                            <p class="card-text"><strong>Stock:</strong> ${producto.stock} unidades</p>
-                        </div>
-                        <div class="card-footer bg-white border-top">
-                            <button class="btn btn-primary w-100">Ver Producto</button>
-                        </div>
+<section class="hero py-5">
+    <div class="container py-lg-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="hero-tag"><i class="bi bi-tag-fill me-1"></i>Hasta 15% de descuento</span>
+                <h1 class="display-4 fw-bold mt-3 mb-3">Autos usados y seminuevos, listos para rodar</h1>
+                <p class="lead mb-4">
+                    Catalogo revisado, con historial y garantia. Filtra por marca, categoria
+                    o precio y encuentra el vehiculo que estabas buscando.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#catalogo" class="btn btn-accent btn-lg">
+                        <i class="bi bi-grid-3x3-gap me-2"></i>Ver catalogo
+                    </a>
+                    <a asp-page="/Registro" class="btn btn-outline-light btn-lg">
+                        Crear mi cuenta
+                    </a>
+                </div>
+                <dl class="row hero-stats g-3 mt-4 mb-0">
+                    <div class="col-4">
+                        <dt class="hero-stats__valor">@catalogo.Total</dt>
+                        <dd class="hero-stats__label mb-0">Vehiculos</dd>
                     </div>
-                `;
-                contenedor.appendChild(card);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('productos-container').innerHTML = 
-                '<div class="col-12"><p class="text-danger text-center">Error al cargar los productos.</p></div>';
-        }
-    }
+                    <div class="col-4">
+                        <dt class="hero-stats__valor">@catalogo.Marcas.Count</dt>
+                        <dd class="hero-stats__label mb-0">Marcas</dd>
+                    </div>
+                    <div class="col-4">
+                        <dt class="hero-stats__valor">@catalogo.Categorias.Count</dt>
+                        <dd class="hero-stats__label mb-0">Categorias</dd>
+                    </div>
+                </dl>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-card">
+                    <i class="bi bi-shield-check"></i>
+                    <p class="mb-0">Todos los vehiculos pasan por una revision de 120 puntos antes de publicarse.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    document.addEventListener('DOMContentLoaded', cargarProductos);
-</script>
+<section class="container pb-5">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <form method="get" asp-page="/Home" class="toolbar p-3 d-grid gap-3" id="catalogo">
+                <div>
+                    <label for="busqueda" class="form-label fw-semibold">Buscar</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="search" class="form-control" id="busqueda" name="busqueda"
+                               value="@catalogo.Busqueda" placeholder="Modelo, marca..." />
+                    </div>
+                </div>
+
+                <div>
+                    <label for="marca" class="form-label fw-semibold">Marca</label>
+                    <select class="form-select" id="marca" name="marca">
+                        <option value="">Todas las marcas</option>
+                        @foreach (var marca in catalogo.Marcas)
+                        {
+                            <option value="@marca" selected="@(catalogo.Marca == marca)">@marca</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label for="categoria" class="form-label fw-semibold">Categoria</label>
+                    <select class="form-select" id="categoria" name="categoria">
+                        <option value="">Todas las categorias</option>
+                        @foreach (var categoria in catalogo.Categorias)
+                        {
+                            <option value="@categoria" selected="@(catalogo.Categoria == categoria)">@categoria</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label for="orden" class="form-label fw-semibold">Ordenar por</label>
+                    <select class="form-select" id="orden" name="orden">
+                        <option value="">Relevancia</option>
+                        <option value="precio-asc" selected="@(catalogo.Orden == "precio-asc")">Menor precio</option>
+                        <option value="precio-desc" selected="@(catalogo.Orden == "precio-desc")">Mayor precio</option>
+                        <option value="anio-desc" selected="@(catalogo.Orden == "anio-desc")">Mas nuevo</option>
+                        <option value="nombre-asc" selected="@(catalogo.Orden == "nombre-asc")">Nombre (A-Z)</option>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-accent">
+                        <i class="bi bi-funnel me-1"></i>Filtrar
+                    </button>
+                    @if (catalogo.HayFiltros)
+                    {
+                        <a class="btn btn-outline-secondary" asp-page="/Home">
+                            <i class="bi bi-x-circle me-1"></i>Limpiar
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <h2 class="h4 mb-0">
+                    @if (catalogo.HayFiltros)
+                    {
+                        <text>Resultados de la busqueda</text>
+                    }
+                    else
+                    {
+                        <text>Todos los vehiculos</text>
+                    }
+                </h2>
+                <span class="text-body-secondary">
+                    @catalogo.Total @(catalogo.Total == 1 ? "vehiculo" : "vehiculos")
+                </span>
+            </div>
+
+            @if (catalogo.Error is not null)
+            {
+                <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        <strong>No pudimos cargar el catalogo.</strong>
+                        <div class="small">@catalogo.Error</div>
+                        <a class="small" href="/api/producto">Ver la API directamente</a>
+                    </div>
+                </div>
+            }
+            else if (catalogo.Total == 0)
+            {
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <h3 class="h5">Sin resultados</h3>
+                    <p class="text-body-secondary mb-3">
+                        No hay vehiculos que coincidan con los filtros seleccionados.
+                    </p>
+                    <a class="btn btn-accent" asp-page="/Home">Quitar filtros</a>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var producto in catalogo.Productos)
+                    {
+                        <div class="col-sm-6 col-xl-4">
+                            <article class="card product-card h-100 @(producto.Agotado ? "product-card--agotado" : "")">
+                                <div class="position-relative">
+                                    @if (string.IsNullOrWhiteSpace(producto.ImagenUrl))
+                                    {
+                                        <div class="product-card__img product-card__placeholder">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <img src="@producto.ImagenUrl" class="product-card__img"
+                                             alt="@producto.Nombre" loading="lazy" decoding="async" />
+                                    }
+
+                                    <div class="product-card__badges">
+                                        @if (producto.Destacado)
+                                        {
+                                            <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Destacado</span>
+                                        }
+                                        @if (producto.DescuentoPorcentaje > 0)
+                                        {
+                                            <span class="badge text-bg-danger">-@producto.DescuentoPorcentaje%</span>
+                                        }
+                                    </div>
+
+                                    @if (producto.Agotado)
+                                    {
+                                        <span class="badge product-card__agotado">Agotado</span>
+                                    }
+                                </div>
+
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                        <span class="product-card__marca">@producto.Marca</span>
+                                        <span class="product-card__anio">@producto.Anio</span>
+                                    </div>
+
+                                    <h3 class="h6 product-card__nombre">
+                                        <a asp-page="/Producto" asp-route-id="@producto.Id">@producto.Nombre</a>
+                                    </h3>
+
+                                    <p class="product-card__especificaciones">
+                                        <span>@producto.Categoria</span>
+                                        <span>@producto.Combustible</span>
+                                        <span>@producto.Transmision</span>
+                                    </p>
+
+                                    <p class="small text-body-secondary mb-3">
+                                        <i class="bi bi-speedometer2 me-1"></i>@HomeModel.FormatoKilometraje(producto.Kilometraje)
+                                    </p>
+
+                                    <div class="mt-auto">
+                                        @if (producto.PrecioOriginal is > 0 && producto.DescuentoPorcentaje > 0)
+                                        {
+                                            <div class="product-card__precio-anterior">
+                                                @HomeModel.FormatoPrecio(producto.PrecioOriginal.Value)
+                                            </div>
+                                        }
+                                        <div class="product-card__precio @(producto.Agotado ? "product-card__precio--agotado" : "")">
+                                            @HomeModel.FormatoPrecio(producto.Precio)
+                                        </div>
+
+                                        <a class="btn btn-accent w-100 mt-3"
+                                       asp-page="/Producto" asp-route-id="@producto.Id">
+                                            Ver detalle
+                                        </a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>
