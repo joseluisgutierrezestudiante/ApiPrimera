@@ -1,3 +1,4 @@
+@inject ApiPrimera.Interfaces.ICarritoService Carrito
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -38,12 +39,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <button class="btn btn-carrito" type="button" disabled
-                                    title="El carrito se habilita en una entrega posterior">
+                            <a class="btn btn-carrito" asp-page="/Carrito"
+                               title="Ver carrito de compras">
                                 <i class="bi bi-cart3"></i>
                                 <span>Carrito</span>
-                                <span class="badge-carrito">0</span>
-                            </button>
+                                <span class="badge-carrito">@Carrito.Conteo</span>
+                            </a>
                         </li>
                         @if (User.Identity?.IsAuthenticated == true)
                         {

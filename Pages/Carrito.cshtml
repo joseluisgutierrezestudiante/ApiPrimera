@@ -1,0 +1,175 @@
+@page "/Carrito"
+@model CarritoModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Carrito de compras";
+    var cultura = CultureInfo.GetCultureInfo("es-CO");
+}
+
+<section class="container py-5">
+    <h1 class="h2 fw-bold mb-4">
+        <i class="bi bi-cart3 me-2"></i>Carrito de compras
+        @if (Model.Conteo > 0)
+        {
+            <span class="text-body-secondary fs-5">(@Model.Conteo unidad(es))</span>
+        }
+    </h1>
+
+    @if (Model.MensajeCompra is not null)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@Model.MensajeCompra</span>
+        </div>
+    }
+
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger small mb-3" role="alert"></div>
+    }
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="empty-state py-5">
+            <i class="bi bi-cart-x"></i>
+            <h2 class="h5">Tu carrito esta vacio</h2>
+            <p class="text-body-secondary mb-3">
+                Todavia no has agregado vehiculos. Explora el catalogo y encuentra el tuyo.
+            </p>
+            <a class="btn btn-accent" asp-page="/Home">Ver catalogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="ps-4">Vehiculo</th>
+                                        <th scope="col" class="text-center">Precio unitario</th>
+                                        <th scope="col" class="text-center">Cantidad</th>
+                                        <th scope="col" class="text-center">Subtotal</th>
+                                        <th scope="col" class="text-end pe-4"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Items)
+                                    {
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="carrito-miniatura">
+                                                        @if (string.IsNullOrWhiteSpace(item.Producto.ImagenUrl))
+                                                        {
+                                                            <i class="bi bi-image"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@item.Producto.ImagenUrl" alt="@item.Producto.Nombre" loading="lazy" />
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <a class="fw-semibold link-body-emphasis text-decoration-none"
+                                                           asp-page="/Producto" asp-route-id="@item.Producto.Id">
+                                                            @item.Producto.Nombre
+                                                        </a>
+                                                        <div class="small text-body-secondary">
+                                                            @item.Producto.Marca &middot; @item.Producto.Anio
+                                                        </div>
+                                                        @if (item.SinStock)
+                                                        {
+                                                            <span class="badge text-bg-danger mt-1">Agotado</span>
+                                                        }
+                                                        else if (item.CantidadDisponible < item.Cantidad)
+                                                        {
+                                                            <span class="badge text-bg-warning mt-1">
+                                                                Disponible: @item.Producto.Stock
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">@item.Producto.Precio.ToString("C0", cultura)</td>
+                                            <td class="text-center">
+                                                <form method="post" asp-page-handler="Actualizar" class="d-inline-flex align-items-center gap-2">
+                                                    <input type="hidden" name="productoId" value="@item.Producto.Id" />
+                                                    <input type="number" name="cantidad" value="@item.Cantidad" min="0"
+                                                           class="form-control form-control-sm" style="width: 5rem;" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                            title="Actualizar cantidad">
+                                                        <i class="bi bi-arrow-repeat"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td class="text-center fw-semibold">@item.Subtotal.ToString("C0", cultura)</td>
+                                            <td class="text-end pe-4">
+                                                <form method="post" asp-page-handler="Quitar">
+                                                    <input type="hidden" name="productoId" value="@item.Producto.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                            title="Quitar del carrito">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-lg-top" style="top: 1rem;">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold mb-3">Resumen</h2>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-body-secondary">Subtotal</span>
+                            <span>@Model.Total.ToString("C0", cultura)</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-body-secondary">Impuestos</span>
+                            <span>Incluido</span>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
+                            <span>Total</span>
+                            <span>@Model.Total.ToString("C0", cultura)</span>
+                        </div>
+
+                        <form method="post" asp-page-handler="Comprar">
+                            <button type="submit" class="btn btn-accent w-100 btn-lg"
+                                    @(Model.HayErrores ? "disabled" : "")>
+                                <i class="bi bi-bag-check me-2"></i>Comprar ahora
+                            </button>
+                        </form>
+
+                        @if (Model.HayErrores)
+                        {
+                            <p class="text-danger small text-center mt-3 mb-0">
+                                Hay vehiculos sin stock: ajusta o quitalos para continuar.
+                            </p>
+                        }
+
+                        <form method="post" asp-page-handler="Vaciar" class="text-center mt-3">
+                            <button type="submit" class="btn btn-link p-0 text-danger">
+                                <i class="bi bi-trash3 me-1"></i>Vaciar carrito
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <p class="text-center text-body-secondary mt-4">
+        <a class="link-underline" asp-page="/Home">
+            <i class="bi bi-arrow-left me-1"></i>Seguir comprando
+        </a>
+    </p>
+</section>

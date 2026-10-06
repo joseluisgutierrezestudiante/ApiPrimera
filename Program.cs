@@ -82,6 +82,16 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 // cuando no se configura ApiAutoconsumida:BaseUrl.
 builder.Services.AddHttpContextAccessor();
 
+// Carrito de compras persistido en la sesión del navegador.
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(opciones =>
+{
+    opciones.Cookie.HttpOnly = true;
+    opciones.Cookie.IsEssential = true;
+    opciones.IdleTimeout = TimeSpan.FromDays(7);
+});
+builder.Services.AddScoped<ICarritoService, CarritoService>();
+
 // Las vistas (Home, Producto, Admin) consumen la API de productos por HTTP.
 // ApiAutoconsumida:BaseUrl es opcional: si no se define, ProductoApiClient usa el
 // host de la petición en curso, de modo que funciona en cualquier puerto.
@@ -107,6 +117,8 @@ app.UseCors(CorsPolicy);
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthentication();
 
