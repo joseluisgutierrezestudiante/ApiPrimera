@@ -1,0 +1,155 @@
+:root {
+  --ap-primary: #0d1b2a;
+  --ap-accent: #e63946;
+  --ap-accent-hover: #c92a38;
+  --ap-surface: #f5f7fa;
+}
+
+body {
+  background-color: var(--ap-surface);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.navbar-autoprime {
+  background-color: var(--ap-primary);
+}
+
+.navbar-autoprime .navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.navbar-autoprime .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.navbar-autoprime .nav-link:hover,
+.navbar-autoprime .nav-link.active {
+  color: #fff;
+}
+
+.btn-accent {
+  background-color: var(--ap-accent);
+  border-color: var(--ap-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  background-color: var(--ap-accent-hover);
+  border-color: var(--ap-accent-hover);
+  color: #fff;
+}
+
+.btn-outline-accent {
+  color: var(--ap-accent);
+  border-color: var(--ap-accent);
+}
+
+.btn-outline-accent:hover {
+  background-color: var(--ap-accent);
+  color: #fff;
+}
+
+.hero-autoprime {
+  background: linear-gradient(120deg, rgba(13, 27, 42, 0.92), rgba(13, 27, 42, 0.65)),
+    url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80') center/cover;
+  color: #fff;
+  padding: 5rem 0;
+}
+
+.hero-autoprime h1 {
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.card-producto {
+  border: none;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.card-producto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 1rem 2rem rgba(13, 27, 42, 0.15);
+}
+
+.card-producto .card-img-top {
+  height: 210px;
+  object-fit: cover;
+  background-color: #e9ecef;
+}
+
+.badge-descuento {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background-color: var(--ap-accent);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+}
+
+.badge-destacado {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background-color: #ffb703;
+  color: #1b1b1b;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+}
+
+.precio-actual {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ap-primary);
+}
+
+.precio-original {
+  color: #8a94a6;
+  text-decoration: line-through;
+}
+
+.spec-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5b6675;
+}
+
+.spec-lista li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.15rem 0;
+  border-bottom: 1px dashed #e2e6ec;
+}
+
+.agotado-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 27, 42, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.footer-autoprime {
+  background-color: var(--ap-primary);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 2rem 0;
+}
+
+.tabla-admin td {
+  vertical-align: middle;
+}

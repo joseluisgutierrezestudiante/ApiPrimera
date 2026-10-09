@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito | AutoPrime</title>
+  <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-autoprime navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="./index.html">AUTO<span class="text-danger">PRIME</span></a>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <a class="btn btn-outline-light btn-sm" href="./index.html">Seguir comprando</a>
+        <a class="btn btn-accent btn-sm position-relative" href="./carrito.html">
+          Carrito
+          <span id="carrito-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h1 class="h3 fw-bold mb-4">Tu carrito</h1>
+
+    <div id="carrito-vacio" class="text-center py-5 d-none">
+      <p class="fs-5 text-muted">Tu carrito está vacío.</p>
+      <a class="btn btn-accent" href="./index.html">Explorar catálogo</a>
+    </div>
+
+    <div id="carrito-contenido" class="row g-4 d-none">
+      <div class="col-lg-8">
+        <div class="table-responsive bg-white rounded-4 shadow-sm p-3">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Vehículo</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-end">Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="carrito-filas"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="bg-white rounded-4 shadow-sm p-4">
+          <h2 class="h5 fw-bold">Resumen</h2>
+          <div class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">Unidades</span>
+            <span id="resumen-unidades" class="fw-semibold">0</span>
+          </div>
+          <div class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">Total</span>
+            <span id="resumen-total" class="fw-bold fs-5">$0</span>
+          </div>
+          <button id="btn-finalizar" class="btn btn-accent w-100 mt-4">Finalizar compra</button>
+          <button id="btn-vaciar" class="btn btn-outline-secondary w-100 mt-2">Vaciar carrito</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-autoprime">
+    <div class="container d-flex flex-wrap justify-content-between gap-2">
+      <span>© 2026 AutoPrime. Concesionario multimarca.</span>
+      <span>Bogotá · Medellín · Cali</span>
+    </div>
+  </footer>
+
+  <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/cart.js"></script>
+  <script src="./js/carrito.js"></script>
+</body>
+</html>

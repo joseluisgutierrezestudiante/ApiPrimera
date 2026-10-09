@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoPrime | Compra tu carro</title>
+  <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-autoprime navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="./index.html">AUTO<span class="text-danger">PRIME</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navPrincipal">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link active" href="./index.html">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link" href="./admin.html">Administración</a></li>
+        </ul>
+        <a class="btn btn-accent position-relative" href="./carrito.html">
+          Carrito
+          <span id="carrito-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero-autoprime">
+    <div class="container">
+      <div class="col-lg-8">
+        <h1>Encuentra el carro de tus sueños</h1>
+        <p class="lead mb-0">Toyota, Renault, Chevrolet y más. Precios en pesos colombianos, financiación y entrega inmediata.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container py-5">
+    <div class="row g-3 align-items-end mb-4">
+      <div class="col-lg-4">
+        <label class="form-label fw-semibold">Buscar</label>
+        <input id="filtro-busqueda" type="search" class="form-control" placeholder="Modelo, marca o descripción...">
+      </div>
+      <div class="col-lg-3 col-md-4">
+        <label class="form-label fw-semibold">Marca</label>
+        <select id="filtro-marca" class="form-select">
+          <option value="">Todas las marcas</option>
+        </select>
+      </div>
+      <div class="col-lg-3 col-md-4">
+        <label class="form-label fw-semibold">Categoría</label>
+        <select id="filtro-categoria" class="form-select">
+          <option value="">Todas las categorías</option>
+        </select>
+      </div>
+      <div class="col-lg-2 col-md-4">
+        <label class="form-label fw-semibold">Ordenar</label>
+        <select id="filtro-orden" class="form-select">
+          <option value="">Destacados</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="anio-desc">Año: más reciente</option>
+          <option value="nombre-asc">Nombre: A - Z</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 mb-0">Vehículos disponibles</h2>
+      <span id="contador-resultados" class="text-muted small"></span>
+    </div>
+
+    <div id="estado-carga" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status"></div>
+      <p class="text-muted mt-3">Cargando catálogo...</p>
+    </div>
+
+    <div id="grid-productos" class="row g-4 d-none"></div>
+
+    <div id="sin-resultados" class="text-center py-5 d-none">
+      <p class="fs-5 text-muted mb-0">No encontramos vehículos con esos filtros.</p>
+    </div>
+  </main>
+
+  <footer class="footer-autoprime">
+    <div class="container d-flex flex-wrap justify-content-between gap-2">
+      <span>© 2026 AutoPrime. Concesionario multimarca.</span>
+      <span>Bogotá · Medellín · Cali</span>
+    </div>
+  </footer>
+
+  <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/cart.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/main.js"></script>
+</body>
+</html>
