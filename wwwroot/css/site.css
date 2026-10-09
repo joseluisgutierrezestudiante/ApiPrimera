@@ -286,6 +286,19 @@ main {
     font-weight: 500;
 }
 
+.product-card__meta {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
 .empty-state {
     background: #fff;
     border: 1px dashed rgba(31, 45, 61, 0.18);
@@ -313,6 +326,46 @@ main {
 .toolbar .form-select:focus {
     box-shadow: 0 0 0 0.2rem rgba(247, 166, 0, 0.25);
     border-color: var(--apiprimera-accent);
+}
+
+.auth-brand {
+    background: linear-gradient(135deg, var(--apiprimera-navy) 0%, var(--apiprimera-navy-soft) 100%);
+    color: #fff;
+    border-radius: 1rem;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-brand__suffix {
+    color: var(--apiprimera-accent);
+}
+
+.auth-brand__frase {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.auth-brand__beneficios {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.auth-brand__beneficios .bi {
+    color: var(--apiprimera-accent);
+}
+
+.auth-brand__volver {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+.auth-brand__volver:hover,
+.auth-brand__volver:focus {
+    color: #fff;
+    text-decoration: underline;
 }
 
 .detalle-imagen {

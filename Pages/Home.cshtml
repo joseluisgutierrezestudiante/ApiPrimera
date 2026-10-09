@@ -19,8 +19,8 @@
                     <a href="#catalogo" class="btn btn-accent btn-lg">
                         <i class="bi bi-grid-3x3-gap me-2"></i>Ver catalogo
                     </a>
-                    <a asp-page="/Registro" class="btn btn-outline-light btn-lg">
-                        Crear mi cuenta
+                    <a asp-page="/Login" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-person-circle me-2"></i>Ingresar
                     </a>
                 </div>
                 <dl class="row hero-stats g-3 mt-4 mb-0">
@@ -223,9 +223,30 @@
                                             @HomeModel.FormatoPrecio(producto.Precio)
                                         </div>
 
+                                        <ul class="product-card__meta mb-3">
+                                            <li>
+                                                <i class="bi bi-box-seam me-1"></i>
+                                                Cantidad: <strong>@producto.Stock</strong>
+                                            </li>
+                                            <li>
+                                                @if (producto.Agotado)
+                                                {
+                                                    <span class="badge text-bg-secondary">
+                                                        <i class="bi bi-x-circle me-1"></i>No disponible
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge text-bg-success">
+                                                        <i class="bi bi-check-circle me-1"></i>Disponible
+                                                    </span>
+                                                }
+                                            </li>
+                                        </ul>
+
                                         <a class="btn btn-accent w-100 mt-3"
                                        asp-page="/Producto" asp-route-id="@producto.Id">
-                                            Ver detalle
+                                            <i class="bi bi-eye me-1"></i>Ver productos
                                         </a>
                                     </div>
                                 </div>

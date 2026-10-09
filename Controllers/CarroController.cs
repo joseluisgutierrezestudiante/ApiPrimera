@@ -8,7 +8,7 @@ namespace ApiPrimera.Controllers;
 [Route("api/[controller]")]
 public class CarroController : ControllerBase
 {
-    // Controlador simple que actúa directamente sobre InMemoryData
+    // Controlador simple actúa directamente sobre InMemoryData
 
     [HttpGet]
     public ActionResult<IEnumerable<Carro>> GetAll() => Ok(InMemoryData.Carros);
