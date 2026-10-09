@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | AutoPrime</title>
+  <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-autoprime navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="./index.html">AUTO<span class="text-danger">PRIME</span></a>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <a class="btn btn-outline-light btn-sm" href="./index.html">Ver tienda</a>
+        <button class="btn btn-accent btn-sm" id="btn-nuevo">+ Nuevo vehículo</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h1 class="h3 fw-bold mb-4">Panel de administración</h1>
+
+    <div id="alerta-admin"></div>
+
+    <div class="bg-white rounded-4 shadow-sm p-3">
+      <div class="table-responsive">
+        <table class="table align-middle tabla-admin mb-0">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Vehículo</th>
+              <th>Marca</th>
+              <th class="text-end">Precio</th>
+              <th class="text-center">Stock</th>
+              <th class="text-center">Destacado</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-admin"></tbody>
+        </table>
+      </div>
+      <div id="carga-admin" class="text-center py-4">
+        <div class="spinner-border text-danger" role="status"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal fade" id="modalProducto" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <form id="form-producto">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-titulo">Nuevo vehículo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="campo-id">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">Nombre *</label>
+                <input id="campo-nombre" class="form-control" required maxlength="120">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Marca *</label>
+                <input id="campo-marca" class="form-control" required maxlength="60">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Categoría</label>
+                <input id="campo-categoria" class="form-control" maxlength="60">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Año</label>
+                <input id="campo-anio" type="number" class="form-control" min="1900" max="2100" value="2024">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Kilometraje</label>
+                <input id="campo-kilometraje" type="number" class="form-control" min="0" value="0">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Combustible</label>
+                <input id="campo-combustible" class="form-control" maxlength="40" value="Gasolina">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Transmisión</label>
+                <input id="campo-transmision" class="form-control" maxlength="40" value="Manual">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Color</label>
+                <input id="campo-color" class="form-control" maxlength="40">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Precio *</label>
+                <input id="campo-precio" type="number" class="form-control" min="0" step="1000" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Precio original</label>
+                <input id="campo-precio-original" type="number" class="form-control" min="0" step="1000">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Stock</label>
+                <input id="campo-stock" type="number" class="form-control" min="0" value="1">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Descripción</label>
+                <textarea id="campo-descripcion" class="form-control" rows="3" maxlength="1000"></textarea>
+              </div>
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input id="campo-destacado" class="form-check-input" type="checkbox">
+                  <label class="form-check-label" for="campo-destacado">Marcar como destacado</label>
+                </div>
+              </div>
+              <div class="col-12" id="seccion-imagen">
+                <label class="form-label">Imagen (se sube a Cloudinary)</label>
+                <input id="campo-imagen" type="file" accept="image/*" class="form-control">
+                <div class="form-text">Máximo 5 MB. Formatos: JPG, PNG, WEBP, GIF, AVIF.</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-outline-danger d-none" id="btn-eliminar-imagen">Quitar imagen actual</button>
+            <div>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-accent" id="btn-guardar">Guardar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-autoprime mt-5">
+    <div class="container d-flex flex-wrap justify-content-between gap-2">
+      <span>© 2026 AutoPrime. Concesionario multimarca.</span>
+      <span>Bogotá · Medellín · Cali</span>
+    </div>
+  </footer>
+
+  <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/admin.js"></script>
+</body>
+</html>
