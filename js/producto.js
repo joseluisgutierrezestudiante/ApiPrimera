@@ -74,7 +74,7 @@ function plantilla(producto) {
 function dato(etiqueta, valor) {
   return `
     <div class="col">
-      <div class="border rounded-3 p-3 h-100 bg-white">
+      <div class="border rounded-3 p-3 h-100 superficie">
         <div class="text-muted small">${Utils.escape(etiqueta)}</div>
         <div class="fw-semibold">${Utils.escape(valor)}</div>
       </div>

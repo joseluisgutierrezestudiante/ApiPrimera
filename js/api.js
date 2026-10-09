@@ -1,6 +1,45 @@
 const ProductoAPI = (() => {
   const baseUrl = `${window.APP_CONFIG.apiUrl}/producto`;
 
+  function catalogoLocal() {
+    return Array.isArray(window.CATALOGO_LOCAL) ? window.CATALOGO_LOCAL : [];
+  }
+
+  function filtrarLocal({ busqueda, marca, categoria, orden } = {}) {
+    let lista = catalogoLocal().slice();
+
+    if (busqueda) {
+      const termino = busqueda.toLowerCase();
+      lista = lista.filter((p) =>
+        [p.nombre, p.marca, p.categoria, p.descripcion]
+          .join(' ')
+          .toLowerCase()
+          .includes(termino),
+      );
+    }
+    if (marca) lista = lista.filter((p) => p.marca === marca);
+    if (categoria) lista = lista.filter((p) => p.categoria === categoria);
+
+    switch (orden) {
+      case 'precio-asc':
+        lista.sort((a, b) => a.precio - b.precio);
+        break;
+      case 'precio-desc':
+        lista.sort((a, b) => b.precio - a.precio);
+        break;
+      case 'anio-desc':
+        lista.sort((a, b) => b.anio - a.anio);
+        break;
+      case 'nombre-asc':
+        lista.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+        break;
+      default:
+        lista.sort((a, b) => (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0));
+    }
+
+    return lista;
+  }
+
   async function request(url, options = {}) {
     let respuesta;
     try {
@@ -41,7 +80,8 @@ const ProductoAPI = (() => {
   }
 
   return {
-    async listar({ busqueda, marca, categoria, orden } = {}) {
+    async listar(filtros = {}) {
+      const { busqueda, marca, categoria, orden } = filtros;
       const params = new URLSearchParams();
       if (busqueda) params.set('busqueda', busqueda);
       if (marca) params.set('marca', marca);
@@ -49,19 +89,43 @@ const ProductoAPI = (() => {
       if (orden) params.set('orden', orden);
 
       const query = params.toString();
-      return request(query ? `${baseUrl}?${query}` : baseUrl);
+      try {
+        const remoto = await request(query ? `${baseUrl}?${query}` : baseUrl);
+        if (Array.isArray(remoto) && remoto.length) return remoto;
+      } catch {
+        console.warn('[AutoPrime] API no disponible. Mostrando catálogo local de demostración.');
+      }
+      return filtrarLocal(filtros);
     },
 
-    obtener(id) {
-      return request(`${baseUrl}/${id}`);
+    async obtener(id) {
+      try {
+        const remoto = await request(`${baseUrl}/${id}`);
+        if (remoto) return remoto;
+      } catch {
+        console.warn('[AutoPrime] API no disponible. Buscando en el catálogo local.');
+      }
+      return catalogoLocal().find((p) => p.id === Number(id)) || null;
     },
 
-    marcas() {
-      return request(`${baseUrl}/filtros/marcas`);
+    async marcas() {
+      try {
+        const remoto = await request(`${baseUrl}/filtros/marcas`);
+        if (Array.isArray(remoto) && remoto.length) return remoto;
+      } catch {
+        console.warn('[AutoPrime] API no disponible. Marcas desde el catálogo local.');
+      }
+      return [...new Set(catalogoLocal().map((p) => p.marca))].sort((a, b) => a.localeCompare(b, 'es'));
     },
 
-    categorias() {
-      return request(`${baseUrl}/filtros/categorias`);
+    async categorias() {
+      try {
+        const remoto = await request(`${baseUrl}/filtros/categorias`);
+        if (Array.isArray(remoto) && remoto.length) return remoto;
+      } catch {
+        console.warn('[AutoPrime] API no disponible. Categorías desde el catálogo local.');
+      }
+      return [...new Set(catalogoLocal().map((p) => p.categoria))].sort((a, b) => a.localeCompare(b, 'es'));
     },
 
     crear(producto) {

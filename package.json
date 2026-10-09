@@ -1,7 +1,7 @@
 {
   "name": "autoprime-ecommerce",
   "version": "1.0.0",
-  "description": "Frontend ecommerce multimarca conectado a la API ApiPrimera (ASP.NET Core + MySQL + Cloudinary)",
+  "description": "Catálogo y carrito de compras de vehículos usados",
   "scripts": {
     "start": "npx --yes serve . -l 5500"
   },
