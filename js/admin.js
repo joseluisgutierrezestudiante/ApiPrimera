@@ -1,4 +1,20 @@
-document.addEventListener('DOMContentLoaded', () => {
+const baseUrl = (window.APP_CONFIG && window.APP_CONFIG.apiUrl) || 'http://localhost:5069/api';
+
+async function verificarSesion() {
+  try {
+    const respuesta = await fetch(`${baseUrl}/auth/sesion`, { credentials: 'include' });
+    if (respuesta.ok) return true;
+  } catch (error) {
+    /* API no disponible: se exige iniciar sesión de todos modos */
+  }
+  window.location.href = `./login.html?next=${encodeURIComponent('admin.html')}`;
+  return false;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const autorizado = await verificarSesion();
+  if (!autorizado) return;
+
   const tbody = document.getElementById('tabla-admin');
   const carga = document.getElementById('carga-admin');
   const alerta = document.getElementById('alerta-admin');
@@ -193,6 +209,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('btn-nuevo').addEventListener('click', abrirNuevo);
+
+  document.getElementById('btn-salir').addEventListener('click', async () => {
+    try {
+      await fetch(`${baseUrl}/auth/logout`, { method: 'POST', credentials: 'include' });
+    } catch (error) {
+      /* cerramos la sesión local aunque falle la llamada */
+    }
+    try {
+      localStorage.removeItem('autoprime_usuario');
+    } catch (e) {
+      /* almacenamiento no disponible */
+    }
+    window.location.href = './login.html';
+  });
 
   cargarTabla();
 });

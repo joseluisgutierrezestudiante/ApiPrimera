@@ -54,7 +54,7 @@ function plantilla(producto) {
 
         <div class="row row-cols-2 g-3 my-4">
           ${dato('Año', producto.anio)}
-          ${dato('Kilometraje', `${Utils.formatoNumero(producto.kilometraje)} km`)}
+          ${dato('Kilometraje', producto.kilometraje > 0 ? `${Utils.formatoNumero(producto.kilometraje)} km` : 'Nuevo')}
           ${dato('Combustible', producto.combustible)}
           ${dato('Transmisión', producto.transmision)}
           ${dato('Color', producto.color)}

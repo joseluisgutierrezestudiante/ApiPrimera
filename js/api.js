@@ -41,9 +41,10 @@ const ProductoAPI = (() => {
   }
 
   async function request(url, options = {}) {
+    const opciones = { credentials: 'include', ...options };
     let respuesta;
     try {
-      respuesta = await fetch(url, options);
+      respuesta = await fetch(url, opciones);
     } catch (error) {
       throw new Error('No se pudo conectar con la API. Verifica que el backend esté en ejecución.');
     }
@@ -56,6 +57,9 @@ const ProductoAPI = (() => {
     const contenido = texto ? safeJson(texto) : null;
 
     if (!respuesta.ok) {
+      if (respuesta.status === 401) {
+        throw new Error('No autorizado. Inicia sesión para continuar.');
+      }
       const mensaje = typeof contenido === 'string' ? contenido : contenido?.title || contenido?.detail;
       throw new Error(mensaje || `Error ${respuesta.status} al comunicarse con la API.`);
     }
