@@ -1,22 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Ink:wght@100..900&family=Monoton&display=swap');
 
 :root {
-  --primary-color: #1976D2;
+  --primary-color: #E10600;
   --secondary-color: #616161;
   --background-color: #FAFAFA;
   --text-color: #212121;
 
-  --ap-primary: #212121;
+  --ap-primary: #0B0B0B;
   --ap-accent: var(--primary-color);
-  --ap-accent-hover: #0D47A1;
+  --ap-accent-hover: #B30500;
   --ap-surface: var(--background-color);
   --ap-superficie: #F5F5F5;
   --ap-borde: rgba(33, 33, 33, 0.12);
   --ap-text: var(--text-color);
   --ap-muted: var(--secondary-color);
 
-  --bs-primary: #1976D2;
-  --bs-primary-rgb: 25, 118, 210;
+  --bs-primary: #E10600;
+  --bs-primary-rgb: 225, 6, 0;
   --bs-success: #4CAF50;
   --bs-success-rgb: 76, 175, 80;
 
@@ -49,9 +50,11 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(700px 460px at 12% 8%, rgba(25, 118, 210, 0.06), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(33, 33, 33, 0.025) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(33, 33, 33, 0.025) 0 2px, transparent 2px 4px),
+    radial-gradient(700px 460px at 12% 8%, rgba(225, 6, 0, 0.07), transparent 60%),
     radial-gradient(800px 520px at 88% 20%, rgba(33, 33, 33, 0.04), transparent 60%),
-    radial-gradient(700px 520px at 55% 95%, rgba(25, 118, 210, 0.05), transparent 60%);
+    radial-gradient(700px 520px at 55% 95%, rgba(225, 6, 0, 0.05), transparent 60%);
 }
 
 h1, h2, h3 {
@@ -66,6 +69,30 @@ h2 {
 h3 {
   text-transform: uppercase;
   letter-spacing: 1.5px;
+}
+
+.monoton-regular {
+  font-family: "Monoton", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.bitcount-ink {
+  font-family: "Bitcount Ink", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "CRSV" 0.5,
+    "ELSH" 0,
+    "ELXP" 0,
+    "SZP1" 0,
+    "SZP2" 0,
+    "XPN1" 0,
+    "XPN2" 0,
+    "YPN1" 0,
+    "YPN2" 0;
 }
 
 button, input, select, textarea {
@@ -91,10 +118,11 @@ button, input, select, textarea {
 .navbar-autoprime .navbar-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  gap: 0.6rem;
+  font-family: 'Monoton', sans-serif;
+  font-weight: 400;
+  font-size: 1.35rem;
+  letter-spacing: 1px;
   color: #fff;
 }
 
@@ -133,7 +161,7 @@ button, input, select, textarea {
 
 .navbar-autoprime .dropdown-item:hover,
 .navbar-autoprime .dropdown-item:focus {
-  background-color: rgba(25, 118, 210, 0.1);
+  background-color: rgba(225, 6, 0, 0.1);
   color: var(--ap-text);
 }
 
@@ -154,6 +182,33 @@ button, input, select, textarea {
 
 .btn-accent:hover {
   transform: scale(1.02);
+  box-shadow: 0 10px 24px rgba(225, 6, 0, 0.35);
+}
+
+.btn-outline-accent {
+  border: 1.5px solid var(--ap-accent);
+  color: var(--ap-accent);
+  background: transparent;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-outline-accent:hover,
+.btn-outline-accent:focus {
+  background-color: var(--ap-accent);
+  border-color: var(--ap-accent);
+  color: #fff;
+}
+
+.btn-outline-accent:hover {
+  transform: scale(1.02);
+}
+
+.btn-outline-accent:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-success {
@@ -174,13 +229,53 @@ button, input, select, textarea {
   transform: scale(1.05);
 }
 
+.banner {
+  position: relative;
+  background-color: #0B0B0B;
+  background-image:
+    url('auto-deportivo.jpg'),
+    url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1600&q=80');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #FAFAFA;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  padding: 80px 20px;
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
 .hero-autoprime {
-  background-color: var(--background-color);
-  background-image: radial-gradient(1000px 420px at 50% -10%, rgba(25, 118, 210, 0.08), transparent 60%);
-  color: var(--text-color);
-  padding: 4.5rem 0;
+  position: relative;
+  overflow: hidden;
   text-align: center;
-  border-bottom: 1px solid var(--ap-borde);
+  padding: 6.5rem 0 4rem;
+  border-bottom: 3px solid var(--ap-accent);
+}
+
+.hero-autoprime::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 420px at 50% 0%, rgba(225, 6, 0, 0.3), transparent 65%),
+    linear-gradient(180deg, rgba(11, 11, 11, 0.5) 0%, rgba(11, 11, 11, 0.7) 100%);
+}
+
+.hero-autoprime > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-badge {
@@ -191,19 +286,23 @@ button, input, select, textarea {
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ap-muted);
-  border: 1px solid var(--ap-borde);
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 .hero-titulo {
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: clamp(2.5rem, 7vw, 4.25rem);
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   line-height: 1.05;
   margin-bottom: 1rem;
-  color: var(--text-color);
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
 }
 
 .hero-titulo span {
@@ -219,10 +318,11 @@ button, input, select, textarea {
   background: var(--primary-color);
   border-radius: 2px;
   transform: skewX(-20deg);
+  box-shadow: 0 0 18px rgba(225, 6, 0, 0.8);
 }
 
 .hero-sub {
-  color: var(--ap-muted);
+  color: rgba(255, 255, 255, 0.75);
   max-width: 560px;
   margin: 0 auto;
 }
@@ -241,7 +341,7 @@ button, input, select, textarea {
   font-size: 0.8rem;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ap-muted);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .marcas-carrusel {
@@ -302,41 +402,64 @@ button, input, select, textarea {
 
 .card {
   border-radius: 12px;
-  border: 1px solid var(--ap-borde);
-  background-color: #f9f9f9;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #1c1c1c;
+  color: #FAFAFA;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8);
 }
 
 .card-producto {
   border: none;
   border-radius: 1rem;
-  background-color: var(--ap-superficie);
-  color: var(--text-color);
+  background-color: #1c1c1c;
+  color: #FAFAFA;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
+  animation: card-fade-in 0.55s ease both;
+  animation-delay: var(--anim-delay, 0ms);
+}
+
+@keyframes card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-producto:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 1rem 2rem rgba(33, 33, 33, 0.15);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(225, 6, 0, 0.4);
 }
 
 .card-producto .card-img-top {
   height: 210px;
   object-fit: cover;
   background-color: #E9E9E9;
+  transition: transform 0.5s ease;
+}
+
+.card-producto:hover .card-img-top {
+  transform: scale(1.06);
 }
 
 .card-producto .card-title,
 .card-producto .card-text {
-  color: var(--ap-text);
+  color: #FAFAFA;
+}
+
+.card-producto .text-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
 .badge-descuento {
@@ -367,9 +490,17 @@ button, input, select, textarea {
   color: var(--ap-text);
 }
 
+.card-producto .precio-actual {
+  color: #FAFAFA;
+}
+
 .precio-original {
   color: var(--ap-muted);
   text-decoration: line-through;
+}
+
+.card-producto .precio-original {
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .spec-lista {
@@ -377,14 +508,14 @@ button, input, select, textarea {
   padding: 0;
   margin: 0;
   font-size: 0.85rem;
-  color: var(--ap-muted);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .spec-lista li {
   display: flex;
   justify-content: space-between;
   padding: 0.15rem 0;
-  border-bottom: 1px dashed var(--ap-borde);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
 }
 
 .agotado-overlay {
@@ -413,9 +544,9 @@ button, input, select, textarea {
 
 .footer-marca {
   display: inline-block;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  font-size: 1.4rem;
+  font-family: 'Monoton', sans-serif;
+  font-weight: 400;
+  font-size: 1.3rem;
   letter-spacing: 1px;
   color: var(--ap-text);
   text-decoration: none;
@@ -492,7 +623,7 @@ button, input, select, textarea {
   background-color: var(--ap-accent);
   border-color: var(--ap-accent);
   transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(25, 118, 210, 0.35);
+  box-shadow: 0 10px 20px rgba(225, 6, 0, 0.35);
 }
 
 .footer-base {
@@ -546,7 +677,7 @@ button, input, select, textarea {
   background-color: #FFFFFF;
   color: var(--ap-text);
   border-color: var(--ap-accent);
-  box-shadow: 0 0 0 0.25rem rgba(25, 118, 210, 0.15);
+  box-shadow: 0 0 0 0.25rem rgba(225, 6, 0, 0.15);
 }
 
 .form-control::placeholder {
@@ -573,8 +704,6 @@ button, input, select, textarea {
 }
 
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .card,
-  .card-producto,
   .superficie,
   .modal-content {
     background: #f9f9f9;
@@ -582,6 +711,15 @@ button, input, select, textarea {
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .card,
+  .card-producto {
+    background: #1c1c1c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -619,11 +757,24 @@ button, input, select, textarea {
   height: 22px;
 }
 
+.material-symbols-outlined {
+  font-size: 28px;
+  line-height: 1;
+  color: #D32F2F;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.material-symbols-outlined:hover {
+  transform: scale(1.2);
+  color: #b71c1c;
+}
+
 .nav-icono:hover,
 .nav-icono:focus-visible {
   color: #fff;
   border-color: var(--ap-accent);
-  background-color: rgba(25, 118, 210, 0.3);
+  background-color: rgba(225, 6, 0, 0.3);
   transform: translateY(-3px) scale(1.08);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
   outline: none;
@@ -665,6 +816,26 @@ button, input, select, textarea {
   font-weight: 700;
   border-radius: 999px;
   box-shadow: 0 0 0 2px var(--ap-primary);
+}
+
+.navbar-autoprime .navbar-toggler {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 0.3rem 0.45rem;
+  line-height: 0;
+}
+
+.navbar-autoprime .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(225, 6, 0, 0.35);
+}
+
+.navbar-autoprime.active {
+  border-bottom: 2px solid var(--ap-accent);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+}
+
+.navbar-autoprime.active .navbar-toggler .material-symbols-outlined {
+  transform: rotate(90deg);
 }
 
 /* Banner de auto destacado */
@@ -713,7 +884,7 @@ button, input, select, textarea {
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--ap-accent);
-  border: 1px solid rgba(25, 118, 210, 0.4);
+  border: 1px solid rgba(225, 6, 0, 0.4);
   border-radius: 999px;
 }
 
@@ -745,6 +916,14 @@ button, input, select, textarea {
 }
 
 @media (max-width: 991.98px) {
+  .banner {
+    background-attachment: scroll;
+  }
+
+  .hero-autoprime {
+    padding: 5rem 0 3rem;
+  }
+
   .banner-destacado-caja {
     grid-template-columns: 1fr;
   }
@@ -757,6 +936,9 @@ button, input, select, textarea {
 @media (prefers-reduced-motion: reduce) {
   .marcas-pista,
   .nav-icono,
+  .card-producto,
+  .card-producto:hover .card-img-top,
+  .material-symbols-outlined,
   .nav-icono--carrito:hover svg {
     animation: none;
     transition: none;
@@ -768,7 +950,7 @@ button, input, select, textarea {
   border-radius: 1.25rem;
   border: 1px solid var(--ap-borde);
   background:
-    radial-gradient(600px 320px at 0% 0%, rgba(25, 118, 210, 0.1), transparent 60%),
+    radial-gradient(600px 320px at 0% 0%, rgba(225, 6, 0, 0.1), transparent 60%),
     var(--ap-superficie);
   padding: 2.5rem;
 }
@@ -818,8 +1000,8 @@ button, input, select, textarea {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(25, 118, 210, 0.1);
-  border: 1px solid rgba(25, 118, 210, 0.35);
+  background: rgba(225, 6, 0, 0.1);
+  border: 1px solid rgba(225, 6, 0, 0.35);
   color: var(--primary-color);
 }
 
@@ -918,7 +1100,7 @@ button, input, select, textarea {
 
 .checkout-metodo.is-selected {
   border-color: var(--ap-accent);
-  box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+  box-shadow: 0 0 0 0.2rem rgba(225, 6, 0, 0.15);
 }
 
 .checkout-metodo__texto {

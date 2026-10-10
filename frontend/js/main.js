@@ -22,9 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  function crearCard(producto) {
+  function crearCard(producto, indice = 0) {
     const columna = document.createElement('div');
     columna.className = 'col-xl-4 col-md-6';
+    columna.style.setProperty('--anim-delay', `${Math.min(indice, 12) * 60}ms`);
 
     const descuento = Number(producto.descuentoPorcentaje) || 0;
     const tieneOriginal = descuento > 0 && producto.precioOriginal;
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <ul class="spec-lista mb-3">
             <li><span>Año</span><span>${Utils.escape(producto.anio)}</span></li>
             <li><span>Kilometraje</span><span>${producto.kilometraje > 0 ? `${Utils.formatoNumero(producto.kilometraje)} km` : 'Nuevo'}</span></li>
-            <li><span>Cantidad</span><span>${stock}</span></li>
+            <li><span>Disponibles</span><span>${stock}</span></li>
           </ul>
           <div class="mt-auto">
             <div class="d-flex align-items-baseline gap-2 mb-3">
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sinResultados.classList.add('d-none');
     grid.classList.remove('d-none');
     const fragmento = document.createDocumentFragment();
-    productos.forEach((producto) => fragmento.appendChild(crearCard(producto)));
+    productos.forEach((producto, indice) => fragmento.appendChild(crearCard(producto, indice)));
     grid.appendChild(fragmento);
   }
 
