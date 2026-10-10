@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ApiPrimera.Interfaces;
 using ApiPrimera.Models;
@@ -61,6 +62,7 @@ public class ProductoController : ControllerBase
         return Ok(p);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Producto>> Create([FromBody] Producto producto)
     {
@@ -75,6 +77,7 @@ public class ProductoController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] Producto producto)
     {
@@ -90,6 +93,7 @@ public class ProductoController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -101,6 +105,7 @@ public class ProductoController : ControllerBase
     // Una sola accion para las dos variantes. Antes eran dos acciones que solo se
     // diferenciaban por [Consumes]: un Content-Type distinto launchaba
     // AmbiguousMatchException (HTTP 500) en lugar de un 415 coherente.
+    [Authorize]
     [HttpPost("{id}/imagen")]
     public async Task<IActionResult> SubirImagen(int id)
     {
@@ -179,6 +184,7 @@ public class ProductoController : ControllerBase
         StatusCodes.Status415UnsupportedMediaType,
         "Formato no admitido. Envía multipart/form-data con el campo 'archivo' o application/json con 'imagenBase64'.");
 
+    [Authorize]
     [HttpDelete("{id}/imagen")]
     public async Task<IActionResult> EliminarImagen(int id)
     {

@@ -105,7 +105,7 @@ else
                     </tr>
                     <tr>
                         <th scope="row" class="text-body-secondary fw-normal">Kilometraje</th>
-                        <td>@(producto.Kilometraje.ToString("N0", cultura).Replace(",", ".")) km</td>
+                        <td>@(producto.Kilometraje > 0 ? producto.Kilometraje.ToString("N0", cultura).Replace(",", ".") + " km" : "Nuevo")</td>
                     </tr>
                     <tr>
                         <th scope="row" class="text-body-secondary fw-normal">Combustible</th>

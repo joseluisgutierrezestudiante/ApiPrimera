@@ -65,7 +65,7 @@ public class ProductoRepositoryTests
 
         Assert.Equal(2, (await repo.BuscarAsync(null, "Toyota", null, null)).Count());
         Assert.Equal(2, (await repo.BuscarAsync(null, null, "Sedan", null)).Count());
-        Assert.Equal(1, (await repo.BuscarAsync(null, "Toyota", "Camioneta", null)).Count());
+        Assert.Single(await repo.BuscarAsync(null, "Toyota", "Camioneta", null));
     }
 
     [Theory]

@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tieneOriginal = descuento > 0 && producto.precioOriginal;
     const destacado = producto.destacado ? '<span class="badge-destacado">Destacado</span>' : '';
     const agotadoOverlay = producto.agotado ? '<div class="agotado-overlay">Agotado</div>' : '';
+    const stock = Number(producto.stock) > 0
+      ? `${Utils.formatoNumero(producto.stock)} unidades`
+      : 'Agotado';
 
     columna.innerHTML = `
       <article class="card card-producto shadow-sm">
@@ -44,19 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3 class="h6 fw-bold">${Utils.escape(producto.nombre)}</h3>
           <ul class="spec-lista mb-3">
             <li><span>Año</span><span>${Utils.escape(producto.anio)}</span></li>
-            <li><span>Kilometraje</span><span>${Utils.formatoNumero(producto.kilometraje)} km</span></li>
-            <li><span>Transmisión</span><span>${Utils.escape(producto.transmision)}</span></li>
-            <li><span>Combustible</span><span>${Utils.escape(producto.combustible)}</span></li>
+            <li><span>Kilometraje</span><span>${producto.kilometraje > 0 ? `${Utils.formatoNumero(producto.kilometraje)} km` : 'Nuevo'}</span></li>
+            <li><span>Cantidad</span><span>${stock}</span></li>
           </ul>
           <div class="mt-auto">
             <div class="d-flex align-items-baseline gap-2 mb-3">
               <span class="precio-actual">${Utils.formatoCOP(producto.precio)}</span>
               ${tieneOriginal ? `<span class="precio-original small">${Utils.formatoCOP(producto.precioOriginal)}</span>` : ''}
             </div>
-            <div class="d-flex gap-2">
-              <a class="btn btn-outline-accent flex-grow-1" href="./producto.html?id=${producto.id}">Ver detalle</a>
-              <button class="btn btn-accent flex-grow-1" data-agregar="${producto.id}" ${producto.agotado ? 'disabled' : ''}>
-                Agregar
+            <div class="d-flex flex-column gap-2">
+              <a class="btn btn-accent" href="./producto.html?id=${producto.id}">Ver producto</a>
+              <button class="btn btn-outline-accent" data-agregar="${producto.id}" ${producto.agotado ? 'disabled' : ''}>
+                Agregar al carrito
               </button>
             </div>
           </div>
@@ -130,6 +132,86 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  async function cargarBannerDestacado() {
+    const nombres = {
+      imagen: document.getElementById('banner-imagen'),
+      titulo: document.getElementById('banner-nombre'),
+      desc: document.getElementById('banner-desc'),
+      precio: document.getElementById('banner-precio'),
+      cta: document.getElementById('banner-cta'),
+    };
+    if (!nombres.titulo) return;
+
+    try {
+      const productos = await ProductoAPI.listar({});
+      const destacados = productos.filter((p) => p.destacado);
+      const elegido = (destacados.length ? destacados : productos)
+        .slice()
+        .sort((a, b) => Number(b.precio) - Number(a.precio))[0];
+      if (!elegido) return;
+
+      if (nombres.imagen && elegido.imagenUrl) {
+        nombres.imagen.src = elegido.imagenUrl;
+        nombres.imagen.alt = `${elegido.marca} ${elegido.nombre}`;
+      }
+      nombres.titulo.textContent = elegido.nombre;
+      if (nombres.desc) {
+        nombres.desc.textContent = elegido.descripcion ||
+          `Vehículo ${elegido.marca} ${elegido.anio} con entrega inmediata.`;
+      }
+      if (nombres.precio) {
+        const original =
+          Number(elegido.precioOriginal) > Number(elegido.precio)
+            ? `<small>${Utils.formatoCOP(elegido.precioOriginal)}</small>`
+            : '';
+        nombres.precio.innerHTML = `${Utils.formatoCOP(elegido.precio)}${original}`;
+      }
+      if (nombres.cta) {
+        nombres.cta.href = `./producto.html?id=${elegido.id}`;
+      }
+    } catch {
+      // El banner conserva su contenido por defecto.
+    }
+  }
+
+  const botonBuscar = document.querySelector('[data-buscar]');
+  if (botonBuscar) {
+    botonBuscar.addEventListener('click', () => {
+      filtros.busqueda.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      filtros.busqueda.focus();
+    });
+  }
+
+  async function cargarMenuCategorias() {
+    const menu = document.getElementById('menu-categorias');
+    if (!menu) return;
+
+    const crearItem = (texto, categoria) => {
+      const item = document.createElement('li');
+      const enlace = document.createElement('a');
+      enlace.className = 'dropdown-item';
+      enlace.href = '#catalogo';
+      enlace.textContent = texto;
+      enlace.addEventListener('click', () => {
+        filtros.categoria.value = categoria;
+        cargarProductos();
+      });
+      item.appendChild(enlace);
+      return item;
+    };
+
+    try {
+      const categorias = await ProductoAPI.categorias();
+      menu.innerHTML = '';
+      menu.appendChild(crearItem('Todas las categorías', ''));
+      categorias.forEach((categoria) => {
+        menu.appendChild(crearItem(categoria, categoria));
+      });
+    } catch {
+      // Sin categorías dinámicas si la API no responde.
+    }
+  }
+
   Object.values(filtros).forEach((control) => {
     const evento = control === filtros.busqueda ? 'input' : 'change';
     control.addEventListener(evento, () => {
@@ -139,5 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   cargarFiltros();
+  cargarMenuCategorias();
+  cargarBannerDestacado();
   cargarProductos();
 });

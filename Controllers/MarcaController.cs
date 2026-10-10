@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ApiPrimera.Models;
 using ApiPrimera.Data;
@@ -21,6 +22,7 @@ public class MarcaController : ControllerBase
         return Ok(m);
     }
 
+    [Authorize]
     [HttpPost]
     public ActionResult<Marca> Create([FromBody] Marca marca)
     {
@@ -40,6 +42,7 @@ public class MarcaController : ControllerBase
         return Ok(marca);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] Marca marca)
     {
@@ -60,6 +63,7 @@ public class MarcaController : ControllerBase
         return Ok(existing);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {

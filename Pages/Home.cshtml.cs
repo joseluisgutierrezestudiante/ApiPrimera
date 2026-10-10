@@ -47,5 +47,5 @@ public class HomeModel : PageModel
         precio.ToString("C0", CultureInfo.GetCultureInfo("es-CO"));
 
     public static string FormatoKilometraje(int kilometraje) =>
-        $"{kilometraje:N0} km".Replace(",", ".");
+        kilometraje > 0 ? $"{kilometraje:N0} km".Replace(",", ".") : "Nuevo";
 }

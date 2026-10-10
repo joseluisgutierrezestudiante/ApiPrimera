@@ -93,7 +93,7 @@ public class ProductoSeedService : IProductoSeedService
         bool usarCloudinary,
         CancellationToken cancellationToken)
     {
-        if (!usarCloudinary)
+        if (!usarCloudinary || EsImagenDeCloudinary(imagenOrigen))
         {
             return imagenOrigen;
         }
@@ -114,4 +114,7 @@ public class ProductoSeedService : IProductoSeedService
             return imagenOrigen;
         }
     }
+
+    private static bool EsImagenDeCloudinary(string imageUrl) =>
+        imageUrl.StartsWith("https://res.cloudinary.com/", StringComparison.OrdinalIgnoreCase);
 }

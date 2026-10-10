@@ -8,9 +8,8 @@ using ApiPrimera.Models;
 namespace ApiPrimera.Services;
 
 /// <summary>
-/// Cliente HTTP de la API de productos. Las vistas lo usan para leer y escribir,
-/// de modo que el flujo producto -> imagen -> Cloudinary -> URL -> API -> frontend
-/// queda completo y pasa siempre por los mismos endpoints.
+/// Cliente HTTP de la API de productos. Las vistas lo usan para leer y escribir
+/// a traves de los mismos endpoints que expone el controlador.
 /// </summary>
 public class ProductoApiClient : IProductoApiClient
 {

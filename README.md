@@ -1,46 +1,23 @@
 # ApiPrimera Store
 
-Proyecto ASP.NET Core de un catalogo de automoviles usados. Incluye una API REST de
-productos (MySQL + Entity Framework Core), la integracion con Cloudinary para las
-imagenes y un frontend en Razor Pages que consume esa misma API.
+Proyecto de taller: una API REST de productos en ASP.NET Core (EF Core + MySQL), con fotos en
+Cloudinary y un frontend que la consume. El catálogo son carros nuevos, a precio en pesos.
 
-Integrante: Joseluis Gutierrez Machado.
+Autor: Joseluis Gutiérrez Machado.
 
-## Flujo de una imagen
+## Cómo correrlo
 
-El proyecto sigue una sola cadena, de principio a fin:
+Necesitas el SDK de .NET 10 y MySQL 8 en el puerto 3306.
 
-```
-Producto  ->  Imagen  ->  Cloudinary  ->  URL de la imagen  ->  API  ->  Frontend
-```
-
-1. **Producto**: se crea o edita desde `/Admin/Productos`.
-2. **Imagen**: el formulario envia el archivo como `multipart/form-data` al
-   endpoint `POST /api/producto/{id}/imagen`.
-3. **Cloudinary**: `CloudinaryService` sube el archivo y devuelve su `SecureUrl`.
-4. **URL de la imagen**: se guarda unicamente esa URL en la columna
-   `Producto.ImagenUrl`. El binario nunca entra a la base de datos.
-5. **API**: `GET /api/producto` devuelve el producto con su `ImagenUrl`.
-6. **Frontend**: `Home.cshtml` y `Producto.cshtml` la pintan en un `<img src>`.
-
-La imagen tiene un unico dueño: el endpoint de imagen. Un `PUT /api/producto/{id}`
-no puede cambiar `ImagenUrl`, asi nunca queda un archivo huerfano en Cloudinary.
-Cuando se sube una imagen nueva, la anterior se elimina de Cloudinary.
-
-## Requisitos
-
-- .NET 10 SDK
-- MySQL 8 (o superior) escuchando en el puerto 3306
-
-## Configuracion
-
-La app no versiona credenciales. Configura la conexion con **user-secrets**:
+Las credenciales no van en el repo; se guardan con **user-secrets**:
 
 ```bash
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Port=3306;Database=EcommerceDB;User=root;Password=TU_CLAVE;"
+dotnet run
 ```
 
-Para que las imagenes se guarden en tu cuenta de Cloudinary, agrega:
+Al arrancar se aplican las migraciones y, si la tabla `Producto` está vacía, se llena sola con el
+catálogo de ejemplo. Si además quieres guardar las fotos en tu Cloudinary:
 
 ```bash
 dotnet user-secrets set "CloudinarySettings:CloudName" "TU_CLOUD_NAME"
@@ -48,49 +25,42 @@ dotnet user-secrets set "CloudinarySettings:ApiKey" "TU_API_KEY"
 dotnet user-secrets set "CloudinarySettings:ApiSecret" "TU_API_SECRET"
 ```
 
-Cloudinary es opcional. Sin configurarlo, la app funciona igual: el seed guarda la
-URL de origen de cada foto del catalogo y el endpoint de subida responde 502 con un
-mensaje claro.
+Cloudinary es opcional: sin configurarlo, la app guarda la URL de origen de cada foto.
 
-`ApiAutoconsumida:BaseUrl` tambien es opcional. Si no la defines, el frontend llama
-a la API usando el host de la peticion en curso, asi que funciona en cualquier puerto.
+## Páginas
 
-## Ejecucion
-
-```bash
-dotnet restore
-dotnet ef database update
-dotnet run
-```
-
-| URL | Descripcion |
+| Ruta | Qué es |
 | --- | --- |
-| `/` | Catalogo (redirige a `/Home`) |
-| `/Producto/{id}` | Detalle de un vehiculo |
-| `/Admin/Productos` | Listado con edicion y borrado |
-| `/Admin/Producto` | Alta de producto con subida de imagen |
-| `/api/producto` | API de productos |
-| `/openapi/v1.json` | Documentacion OpenAPI |
+| `/` | Catálogo (redirige a `/Home`) |
+| `/Producto/{id}` | Detalle del carro |
+| `/Carrito` | Carrito y checkout |
+| `/Login`, `/Registro` | Entrar o crear cuenta |
+| `/Admin/Productos` | Listar, editar y borrar (pide sesión) |
+| `/Admin/Producto` | Alta con subida de imagen |
+| `/openapi/v1.json` | Documentación OpenAPI |
 
-Al arrancar, si la tabla `Producto` esta vacia, la app siembra el catalogo de ejemplo
-(`Data/CatalogoProductos.cs`). Con Cloudinary configurado, tambien sube las imagenes.
+## API
 
-## Endpoints
-
-| Metodo | Ruta | Descripcion |
+| Método | Ruta | Qué hace |
 | --- | --- | --- |
 | GET | `/api/producto` | Lista con filtros `busqueda`, `marca`, `categoria`, `orden` |
 | GET | `/api/producto/filtros/marcas` | Marcas disponibles |
-| GET | `/api/producto/filtros/categorias` | Categorias disponibles |
+| GET | `/api/producto/filtros/categorias` | Categorías disponibles |
 | GET | `/api/producto/{id}` | Detalle |
 | POST | `/api/producto` | Crear |
-| PUT | `/api/producto/{id}` | Actualizar (no toca la imagen) |
-| DELETE | `/api/producto/{id}` | Eliminar |
+| PUT | `/api/producto/{id}` | Editar (no toca la imagen) |
+| DELETE | `/api/producto/{id}` | Borrar |
 | POST | `/api/producto/{id}/imagen` | Subir imagen (`multipart` o `imagenBase64`) |
 | DELETE | `/api/producto/{id}/imagen` | Quitar imagen |
+| POST | `/api/auth/registro` | Crear cuenta |
+| POST | `/api/auth/login` | Iniciar sesión |
+| GET | `/api/auth/sesion` | Ver quién está logueado |
+| POST | `/api/auth/logout` | Cerrar sesión |
 
-La imagen acepta JPG, PNG, WEBP, GIF y AVIF de hasta 5 MB. Un formato distinto
-devuelve 415, no 500.
+Los endpoints que escriben (crear, editar, borrar, imágenes) piden sesión. La imagen acepta JPG,
+PNG, WEBP, GIF y AVIF de hasta 5 MB; otro formato responde 415, no 500. Solo el endpoint de imagen
+escribe `ImagenUrl`, así que un `PUT` normal no puede dejar fotos huérfanas, y al reemplazar una
+imagen se borra la anterior.
 
 ## Pruebas
 
@@ -98,30 +68,26 @@ devuelve 415, no 500.
 dotnet test
 ```
 
-71 pruebas que cubren el repositorio (CRUD, filtros, orden), la extraccion del
-`public_id` de Cloudinary, el validador de imagenes y el cliente HTTP de la API
-(crear, actualizar, subir imagen, eliminar) contra un servidor real en proceso.
-
-Las pruebas del repositorio corren sobre SQLite en memoria, asi que no necesitan
-MySQL. MySQL queda reservado para la app.
+Son 79 pruebas. Cubren el repositorio (CRUD, filtros, orden), la autenticación, el carrito, el
+validador de imágenes y el cliente HTTP contra un servidor levantado en el propio proceso. Las del
+repositorio corren sobre SQLite en memoria, así que no necesitan MySQL.
 
 ## Estructura
 
 ```
-Controllers/     API REST (Producto, Marca, Carro)
-Repository/      Acceso a datos (EF Core)
-Services/        Cloudinary, cliente HTTP de la API, seed
-Interfaces/      Contratos
-Models/          Producto, DTOs y ViewModels
-Pages/           Razor Pages (catalogo, detalle, admin)
-Migrations/      Migraciones de EF Core
-ApiPrimera.Tests Pruebas
+Controllers/      API REST (Producto, Marca, Carro, Auth)
+Repository/       Acceso a datos (EF Core)
+Services/         Cloudinary, cliente HTTP, carrito, seed
+Models/           Entidades, DTOs y ViewModels
+Pages/            Razor Pages (catálogo, detalle, carrito, admin, login)
+frontend/         La misma web en HTML/Bootstrap para servir aparte
+Migrations/       Migraciones de EF Core
+ApiPrimera.Tests  Pruebas
 ```
 
 ## Notas
 
-- `net10.0` con EF Core 9.0.11 y Pomelo 9.0.0. Compila y funciona; el salto a EF
-  Core 10 queda pendiente para no mover el terreno en esta entrega.
-- El login y el registro son vistas de muestra. La autenticacion se implementa en una
-  entrega posterior, asi que `/Admin` todavia no pide credenciales.
-- El carrito es visual. El boton esta deshabilitado a proposito.
+- .NET 10 con EF Core 9.0.11 y Pomelo 9.0.0.
+- El checkout es de práctica: simula el pago, no cobra de verdad.
+- `frontend/` es la versión estática del sitio (mismos archivos que usas con Live Server); apunta a
+  la API en `http://localhost:5069/api`.

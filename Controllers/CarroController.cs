@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ApiPrimera.Models;
 using ApiPrimera.Data;
@@ -23,6 +24,7 @@ public class CarroController : ControllerBase
         return Ok(c);
     }
 
+    [Authorize]
     [HttpPost]
     public ActionResult<Carro> Create([FromBody] Carro carro)
     {
@@ -41,6 +43,7 @@ public class CarroController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = carro.Id }, carro);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] Carro carro)
     {
@@ -63,6 +66,7 @@ public class CarroController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {

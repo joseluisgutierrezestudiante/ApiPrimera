@@ -1,27 +1,17 @@
 Repositorio: https://github.com/joseluisgutierrezestudiante/ApiPrimera.git
-Integrante 1: Joseluis Gutierrez Machado
-Integrante 2: (ninguno, entrega individual)
+Autor: Joseluis Gutiérrez Machado (entrega individual)
 
-Descripcion: Proyecto Taller 3 - API REST de productos con ASP.NET Core,
-Entity Framework Core y MySQL, mas un frontend en Razor Pages que consume esa API.
+Descripción: Taller 3 - API REST de productos con ASP.NET Core, Entity Framework Core y MySQL,
+con imágenes en Cloudinary y un frontend en Razor Pages que consume esa misma API.
 
-Flujo de imagen:
-Producto -> Imagen -> Cloudinary -> URL -> API -> Frontend
-
-- El formulario de /Admin/Producto sube el archivo por multipart/form-data.
-- Cloudinary devuelve la SecureUrl y solo esa URL se guarda en Producto.ImagenUrl.
-- El endpoint de imagen es el unico que escribe ImagenUrl, de modo que un PUT
-  nunca deja un archivo huerfano en Cloudinary.
-- El frontend pinta la URL que devuelve la API.
-
-Pruebas: 71 pruebas en verde con dotnet test (no requieren MySQL).
-
-Como ejecutar:
+Cómo ejecutar:
 1. dotnet restore
-2. Configurar la cadena de conexion con user-secrets (ver README).
+2. Configurar la cadena de conexión con user-secrets (ver README).
 3. dotnet ef database update
 4. dotnet run
 
-Nota: no se incluyen credenciales reales. Rellena la conexion con user-secrets
-antes de ejecutar las migraciones. Cloudinary es opcional; sin configurarlo, la
-app guarda la URL de origen de las imagenes del catalogo de ejemplo.
+Pruebas: 71 pruebas en verde con dotnet test (no requieren MySQL).
+
+Nota: no se incluyen credenciales reales. La conexión se configura con user-secrets;
+Cloudinary es opcional. Si no se configura, la app guarda la URL de origen de las imágenes
+del catálogo de ejemplo.

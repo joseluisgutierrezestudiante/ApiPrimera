@@ -4,26 +4,59 @@ using ApiPrimera.Repository;
 using ApiPrimera.Services;
 using ApiPrimera.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.RateLimiting;
 
 const string CorsPolicy = "AllowFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// CORS: permitir que el frontend consuma /api/producto
+// CORS: el frontend (estático o Razor) consume /api. En Desarrollo se refleja
+// cualquier origen para permitir el envío de la cookie de sesión; en Producción
+// usa la lista Cors:AllowedOrigins de la configuración (obligatoria para cookies).
+var origenesPermitidos = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? Array.Empty<string>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(CorsPolicy, policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.SetIsOriginAllowed(_ => true);
+        }
+        else if (origenesPermitidos.Length > 0)
+        {
+            policy.WithOrigins(origenesPermitidos);
+        }
+        else
+        {
+            policy.SetIsOriginAllowed(_ => false);
+        }
+
+        policy.AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+// Límite de peticiones para los endpoints sensibles de autenticación
+// (mitiga fuerza bruta y creación masiva de cuentas).
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("auth", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 10;
+        opt.QueueLimit = 0;
+    });
 });
 
 // Configurar DbContext y repositorio para Producto (EF Core + MySQL)
@@ -44,7 +77,7 @@ if (string.IsNullOrWhiteSpace(connection))
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 46))));
+    options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 
 // Autenticación con ASP.NET Core Identity (cookies de sesión sobre MySQL).
@@ -71,6 +104,9 @@ builder.Services.ConfigureApplicationCookie(opciones =>
     opciones.AccessDeniedPath = "/Login";
     opciones.ExpireTimeSpan = TimeSpan.FromDays(7);
     opciones.SlidingExpiration = true;
+    opciones.Cookie.HttpOnly = true;
+    opciones.Cookie.SameSite = SameSiteMode.Lax;
+    opciones.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 
 // Configurar Cloudinary (subida de imágenes)
@@ -107,8 +143,25 @@ builder.Services.AddScoped<IProductoSeedService, ProductoSeedService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-app.MapOpenApi();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+else
+{
+    app.UseHsts();
+}
+
+// Cabeceras de seguridad básicas (anti clickjacking, sniffing y fugas de referer).
+app.Use(async (context, next) =>
+{
+    var headers = context.Response.Headers;
+    headers["X-Content-Type-Options"] = "nosniff";
+    headers["X-Frame-Options"] = "DENY";
+    headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
+    await next();
+});
 
 app.UseHttpsRedirection();
 
@@ -117,6 +170,8 @@ app.UseCors(CorsPolicy);
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseRateLimiter();
 
 app.UseSession();
 
