@@ -6,7 +6,7 @@
   <title>AutoPrime | Encuentra el auto de tus sueños</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=account_circle,menu,shopping_cart" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu,shopping_cart" />
   <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/styles.css">
 </head>
@@ -105,23 +105,29 @@
 
   <main class="container py-5" id="catalogo">
     <div class="row g-3 align-items-end mb-4">
-      <div class="col-lg-4">
+      <div class="col-lg-3 col-md-6">
         <label class="form-label fw-semibold">Buscar</label>
         <input id="filtro-busqueda" type="search" class="form-control" placeholder="Modelo, marca o descripción...">
       </div>
-      <div class="col-lg-3 col-md-4">
+      <div class="col-lg-2 col-md-3 col-6">
         <label class="form-label fw-semibold">Marca</label>
         <select id="filtro-marca" class="form-select">
           <option value="">Todas las marcas</option>
         </select>
       </div>
-      <div class="col-lg-3 col-md-4">
+      <div class="col-lg-2 col-md-3 col-6">
         <label class="form-label fw-semibold">Categoría</label>
         <select id="filtro-categoria" class="form-select">
-          <option value="">Todas las categorías</option>
+          <option value="">Todas</option>
         </select>
       </div>
-      <div class="col-lg-2 col-md-4">
+      <div class="col-lg-2 col-md-4 col-6">
+        <label class="form-label fw-semibold">Combustible</label>
+        <select id="filtro-combustible" class="form-select">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
         <label class="form-label fw-semibold">Ordenar</label>
         <select id="filtro-orden" class="form-select">
           <option value="">Destacados</option>
@@ -130,6 +136,12 @@
           <option value="anio-desc">Año: más reciente</option>
           <option value="nombre-asc">Nombre: A - Z</option>
         </select>
+      </div>
+      <div class="col-lg-1 col-md-4 col-12 text-end">
+        <button id="btn-limpiar-filtros" type="button" class="btn btn-outline-secondary w-100" title="Limpiar todos los filtros" aria-label="Limpiar filtros">
+          <span class="d-md-none me-1">Limpiar</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+        </button>
       </div>
     </div>
 
@@ -205,8 +217,11 @@
   <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="./js/config.js"></script>
   <script src="./js/utils.js"></script>
+  <script src="./js/navbar.js"></script>
   <script src="./js/cart.js"></script>
+  <script src="./js/catalogo-demo.js"></script>
   <script src="./js/api.js"></script>
   <script src="./js/main.js"></script>
+  <script src="./js/efectos.js"></script>
 </body>
 </html>

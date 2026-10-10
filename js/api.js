@@ -5,7 +5,7 @@ const ProductoAPI = (() => {
     return Array.isArray(window.CATALOGO_LOCAL) ? window.CATALOGO_LOCAL : [];
   }
 
-  function filtrarLocal({ busqueda, marca, categoria, orden } = {}) {
+  function filtrarLocal({ busqueda, marca, categoria, combustible, orden } = {}) {
     let lista = catalogoLocal().slice();
 
     if (busqueda) {
@@ -19,6 +19,7 @@ const ProductoAPI = (() => {
     }
     if (marca) lista = lista.filter((p) => p.marca === marca);
     if (categoria) lista = lista.filter((p) => p.categoria === categoria);
+    if (combustible) lista = lista.filter((p) => p.combustible === combustible);
 
     switch (orden) {
       case 'precio-asc':
@@ -85,11 +86,12 @@ const ProductoAPI = (() => {
 
   return {
     async listar(filtros = {}) {
-      const { busqueda, marca, categoria, orden } = filtros;
+      const { busqueda, marca, categoria, combustible, orden } = filtros;
       const params = new URLSearchParams();
       if (busqueda) params.set('busqueda', busqueda);
       if (marca) params.set('marca', marca);
       if (categoria) params.set('categoria', categoria);
+      if (combustible) params.set('combustible', combustible);
       if (orden) params.set('orden', orden);
 
       const query = params.toString();
@@ -130,6 +132,16 @@ const ProductoAPI = (() => {
         console.warn('[AutoPrime] API no disponible. Categorías desde el catálogo local.');
       }
       return [...new Set(catalogoLocal().map((p) => p.categoria))].sort((a, b) => a.localeCompare(b, 'es'));
+    },
+
+    async combustibles() {
+      try {
+        const remoto = await request(`${baseUrl}/filtros/combustibles`);
+        if (Array.isArray(remoto) && remoto.length) return remoto;
+      } catch {
+        // Fallback desde catálogo local
+      }
+      return [...new Set(catalogoLocal().map((p) => p.combustible).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
     },
 
     crear(producto) {

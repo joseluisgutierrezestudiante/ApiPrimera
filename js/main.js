@@ -3,11 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const carga = document.getElementById('estado-carga');
   const sinResultados = document.getElementById('sin-resultados');
   const contador = document.getElementById('contador-resultados');
+  const btnLimpiar = document.getElementById('btn-limpiar-filtros');
 
   const filtros = {
     busqueda: document.getElementById('filtro-busqueda'),
     marca: document.getElementById('filtro-marca'),
     categoria: document.getElementById('filtro-categoria'),
+    combustible: document.getElementById('filtro-combustible'),
     orden: document.getElementById('filtro-orden'),
   };
 
@@ -15,10 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function valoresActuales() {
     return {
-      busqueda: filtros.busqueda.value.trim(),
-      marca: filtros.marca.value,
-      categoria: filtros.categoria.value,
-      orden: filtros.orden.value,
+      busqueda: filtros.busqueda ? filtros.busqueda.value.trim() : '',
+      marca: filtros.marca ? filtros.marca.value : '',
+      categoria: filtros.categoria ? filtros.categoria.value : '',
+      combustible: filtros.combustible ? filtros.combustible.value : '',
+      orden: filtros.orden ? filtros.orden.value : '',
     };
   }
 
@@ -32,33 +35,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const destacado = producto.destacado ? '<span class="badge-destacado">Destacado</span>' : '';
     const agotadoOverlay = producto.agotado ? '<div class="agotado-overlay">Agotado</div>' : '';
     const stock = Number(producto.stock) > 0
-      ? `${Utils.formatoNumero(producto.stock)} unidades`
+      ? `${Utils.formatoNumero(producto.stock)} disponibles`
       : 'Agotado';
 
+    const textoWhatsApp = `¡Hola AutoPrime! 🚗 Me interesa el vehículo *${producto.marca} ${producto.nombre}* (${producto.anio}) con precio de ${Utils.formatoCOP(producto.precio)}. ¿Sigue disponible?`;
+    const urlWhatsApp = `https://wa.me/573001234567?text=${encodeURIComponent(textoWhatsApp)}`;
+
     columna.innerHTML = `
-      <article class="card card-producto shadow-sm">
+      <article class="card card-producto shadow-sm h-100">
         <div class="position-relative">
-          <img src="${Utils.escape(Utils.imagenSegura(producto))}" class="card-img-top" alt="${Utils.escape(producto.nombre)}">
+          <img src="${Utils.escape(Utils.imagenSegura(producto))}" class="card-img-top" alt="${Utils.escape(producto.nombre)}" loading="lazy">
           ${descuento > 0 ? `<span class="badge-descuento">-${descuento}%</span>` : ''}
           ${destacado}
           ${agotadoOverlay}
         </div>
         <div class="card-body d-flex flex-column">
-          <div class="text-uppercase text-muted small fw-semibold">${Utils.escape(producto.marca)}</div>
-          <h3 class="h6 fw-bold">${Utils.escape(producto.nombre)}</h3>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-uppercase text-muted small fw-semibold">${Utils.escape(producto.marca)}</span>
+            ${producto.combustible ? `<span class="badge bg-secondary-subtle text-dark" style="font-size: 0.7rem">${Utils.escape(producto.combustible)}</span>` : ''}
+          </div>
+          <h3 class="h6 fw-bold mb-2">${Utils.escape(producto.nombre)}</h3>
+          
           <ul class="spec-lista mb-3">
             <li><span>Año</span><span>${Utils.escape(producto.anio)}</span></li>
-            <li><span>Kilometraje</span><span>${producto.kilometraje > 0 ? `${Utils.formatoNumero(producto.kilometraje)} km` : 'Nuevo'}</span></li>
+            <li><span>Kilometraje</span><span>${producto.kilometraje > 0 ? `${Utils.formatoNumero(producto.kilometraje)} km` : '0 km (Nuevo)'}</span></li>
+            <li><span>Transmisión</span><span>${Utils.escape(producto.transmision || 'Automática')}</span></li>
             <li><span>Disponibles</span><span>${stock}</span></li>
           </ul>
+
           <div class="mt-auto">
             <div class="d-flex align-items-baseline gap-2 mb-3">
               <span class="precio-actual">${Utils.formatoCOP(producto.precio)}</span>
               ${tieneOriginal ? `<span class="precio-original small">${Utils.formatoCOP(producto.precioOriginal)}</span>` : ''}
             </div>
+
+            <!-- Acciones Automotrices -->
             <div class="d-flex flex-column gap-2">
-              <a class="btn btn-accent" href="./producto.html?id=${producto.id}">Ver producto</a>
-              <button class="btn btn-outline-accent" data-agregar="${producto.id}" ${producto.agotado ? 'disabled' : ''}>
+              <div class="d-flex gap-2">
+                <a class="btn btn-accent flex-grow-1" href="./producto.html?id=${producto.id}">Ver detalles</a>
+                <a class="btn btn-whatsapp-outline px-3" href="${urlWhatsApp}" target="_blank" rel="noopener noreferrer" title="Consultar por WhatsApp" aria-label="Consultar por WhatsApp">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                    <path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.1-.3 0-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.7 4.3 3.8.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.2-.4-.3z"/>
+                  </svg>
+                </a>
+              </div>
+              <button class="btn btn-outline-accent w-100" data-agregar="${producto.id}" ${producto.agotado ? 'disabled' : ''}>
                 Agregar al carrito
               </button>
             </div>
@@ -70,7 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (boton && !producto.agotado) {
       boton.addEventListener('click', () => {
         Cart.agregar(producto);
-        Utils.mostrarToast(`${producto.nombre} agregado al carrito.`);
+        const originalText = boton.innerHTML;
+        boton.innerHTML = '✓ ¡Agregado!';
+        boton.classList.replace('btn-outline-accent', 'btn-success');
+        Utils.mostrarToast(`¡${producto.nombre} agregado al carrito!`, 'success');
+
+        setTimeout(() => {
+          boton.innerHTML = originalText;
+          boton.classList.replace('btn-success', 'btn-outline-accent');
+        }, 1500);
       });
     }
 
@@ -79,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function render(productos) {
     grid.innerHTML = '';
-    contador.textContent = `${productos.length} vehículo(s)`;
+    contador.textContent = `${productos.length} vehículo(s) disponible(s)`;
 
     if (!productos.length) {
       grid.classList.add('d-none');
@@ -121,13 +150,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function cargarFiltros() {
     try {
-      const [marcas, categorias] = await Promise.all([ProductoAPI.marcas(), ProductoAPI.categorias()]);
-      marcas.forEach((marca) => {
-        filtros.marca.appendChild(new Option(marca, marca));
-      });
-      categorias.forEach((categoria) => {
-        filtros.categoria.appendChild(new Option(categoria, categoria));
-      });
+      const [marcas, categorias, combustibles] = await Promise.all([
+        ProductoAPI.marcas(),
+        ProductoAPI.categorias(),
+        ProductoAPI.combustibles(),
+      ]);
+
+      if (filtros.marca) {
+        marcas.forEach((marca) => {
+          filtros.marca.appendChild(new Option(marca, marca));
+        });
+      }
+
+      if (filtros.categoria) {
+        categorias.forEach((categoria) => {
+          filtros.categoria.appendChild(new Option(categoria, categoria));
+        });
+      }
+
+      if (filtros.combustible) {
+        combustibles.forEach((combustible) => {
+          filtros.combustible.appendChild(new Option(combustible, combustible));
+        });
+      }
     } catch {
       Utils.mostrarToast('No se pudieron cargar los filtros.', 'warning');
     }
@@ -178,8 +223,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const botonBuscar = document.querySelector('[data-buscar]');
   if (botonBuscar) {
     botonBuscar.addEventListener('click', () => {
-      filtros.busqueda.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      filtros.busqueda.focus();
+      if (filtros.busqueda) {
+        filtros.busqueda.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        filtros.busqueda.focus();
+      }
+    });
+  }
+
+  if (btnLimpiar) {
+    btnLimpiar.addEventListener('click', () => {
+      if (filtros.busqueda) filtros.busqueda.value = '';
+      if (filtros.marca) filtros.marca.value = '';
+      if (filtros.categoria) filtros.categoria.value = '';
+      if (filtros.combustible) filtros.combustible.value = '';
+      if (filtros.orden) filtros.orden.value = '';
+      cargarProductos();
     });
   }
 
@@ -194,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
       enlace.href = '#catalogo';
       enlace.textContent = texto;
       enlace.addEventListener('click', () => {
-        filtros.categoria.value = categoria;
+        if (filtros.categoria) filtros.categoria.value = categoria;
         cargarProductos();
       });
       item.appendChild(enlace);
@@ -214,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   Object.values(filtros).forEach((control) => {
+    if (!control) return;
     const evento = control === filtros.busqueda ? 'input' : 'change';
     control.addEventListener(evento, () => {
       clearTimeout(debounceId);
