@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 const string CorsPolicy = "AllowFrontend";
 
@@ -107,6 +110,60 @@ builder.Services.ConfigureApplicationCookie(opciones =>
     opciones.Cookie.HttpOnly = true;
     opciones.Cookie.SameSite = SameSiteMode.Lax;
     opciones.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
+
+// Autenticación JWT para la API (además de la cookie de Identity).
+// El secreto vive SOLO en variables de entorno (Jwt__SecretKey) o en
+// user-secrets; nunca en appsettings.json, que se versiona en el repositorio.
+var jwt = builder.Configuration.GetSection(JwtSettings.Seccion).Get<JwtSettings>() ?? new JwtSettings();
+if (!jwt.EstaConfigurada)
+{
+    throw new InvalidOperationException(
+        "Falta la clave 'Jwt:SecretKey' (mínimo 32 caracteres) para firmar los tokens JWT.\n" +
+        "\n" +
+        "Opción recomendada (no versiona la clave):\n" +
+        "  dotnet user-secrets set \"Jwt:SecretKey\" \"<clave aleatoria de 32+ caracteres>\"\n" +
+        "\n" +
+        "O define la variable de entorno Jwt__SecretKey:\n" +
+        "  PowerShell:  $env:Jwt__SecretKey=\"<clave>\"\n" +
+        "  Linux/macOS: export Jwt__SecretKey=\"<clave>\"\n" +
+        "\n" +
+        "Consulta el README para el detalle.");
+}
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.Seccion));
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+// Access tokens de vida corta (15 min, HS256). El esquema "Bearer" se agrega
+// sin tocar los defaults de Identity: la cookie de sesión sigue igual.
+builder.Services.AddAuthentication()
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opciones =>
+    {
+        opciones.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwt.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwt.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
+            ValidateLifetime = true,
+            RequireExpirationTime = true,
+            // Tolerancia mínima: con tokens de 15 minutos no hace falta más.
+            ClockSkew = TimeSpan.FromSeconds(30),
+        };
+    });
+
+// Política de API: acepta la cookie de Identity O el Bearer JWT.
+builder.Services.AddAuthorization(opciones =>
+{
+    opciones.AddPolicy("ApiConJwt", politica =>
+    {
+        politica.RequireAuthenticatedUser();
+        politica.AddAuthenticationSchemes(
+            IdentityConstants.ApplicationScheme,
+            JwtBearerDefaults.AuthenticationScheme);
+    });
 });
 
 // Configurar Cloudinary (subida de imágenes)

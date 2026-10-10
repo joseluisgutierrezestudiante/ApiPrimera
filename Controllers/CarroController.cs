@@ -24,7 +24,7 @@ public class CarroController : ControllerBase
         return Ok(c);
     }
 
-    [Authorize]
+    [Authorize(Policy = "ApiConJwt")]
     [HttpPost]
     public ActionResult<Carro> Create([FromBody] Carro carro)
     {
@@ -43,7 +43,7 @@ public class CarroController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = carro.Id }, carro);
     }
 
-    [Authorize]
+    [Authorize(Policy = "ApiConJwt")]
     [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] Carro carro)
     {
@@ -66,7 +66,7 @@ public class CarroController : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
+    [Authorize(Policy = "ApiConJwt")]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {

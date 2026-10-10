@@ -22,7 +22,7 @@ public class MarcaController : ControllerBase
         return Ok(m);
     }
 
-    [Authorize]
+    [Authorize(Policy = "ApiConJwt")]
     [HttpPost]
     public ActionResult<Marca> Create([FromBody] Marca marca)
     {
@@ -42,7 +42,7 @@ public class MarcaController : ControllerBase
         return Ok(marca);
     }
 
-    [Authorize]
+    [Authorize(Policy = "ApiConJwt")]
     [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] Marca marca)
     {
@@ -63,7 +63,7 @@ public class MarcaController : ControllerBase
         return Ok(existing);
     }
 
-    [Authorize]
+    [Authorize(Policy = "ApiConJwt")]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
