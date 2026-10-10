@@ -1,0 +1,108 @@
+@page "/Registro"
+@model RegistroModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+}
+
+<section class="container py-5">
+    <div class="row g-4 justify-content-center align-items-stretch">
+        <div class="col-lg-5">
+            <div class="auth-brand h-100">
+                <span class="brand-mark brand-mark--lg mb-4"><i class="bi bi-car-front-fill"></i></span>
+                <h1 class="h2 fw-bold mb-1">ApiPrimera <span class="auth-brand__suffix">Store</span></h1>
+                <p class="auth-brand__frase mb-4">
+                    Crea tu cuenta y empieza a comprar autos usados y seminuevos
+                    con revision de 120 puntos y garantia.
+                </p>
+                <ul class="list-unstyled d-grid gap-2 auth-brand__beneficios mb-4">
+                    <li><i class="bi bi-check-circle-fill me-2"></i>Guarda tus vehiculos favoritos</li>
+                    <li><i class="bi bi-check-circle-fill me-2"></i>Compara precios y ofertas</li>
+                    <li><i class="bi bi-check-circle-fill me-2"></i>Compra rapida y segura</li>
+                </ul>
+                <a class="auth-brand__volver" asp-page="/Home">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a la tienda
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card auth-card h-100">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <span class="brand-mark brand-mark--lg mb-3 d-inline-grid"><i class="bi bi-person-plus-fill"></i></span>
+                        <h2 class="h4 fw-bold mb-1">Registrate</h2>
+                        <p class="text-body-secondary mb-0">
+                            Completa tus datos para crear tu cuenta en la tienda.
+                        </p>
+                    </div>
+
+                    @if (TempData["Mensaje"] is string mensaje)
+                    {
+                        <div class="alert alert-info d-flex align-items-start gap-2 small" role="alert">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>@mensaje</span>
+                        </div>
+                    }
+
+                    @if (ViewData.ModelState.ErrorCount > 0)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger small mb-3" role="alert"></div>
+                    }
+
+                    <form method="post" asp-page="/Registro">
+                        <div class="mb-3">
+                            <label asp-for="Input.Nombre" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input asp-for="Input.Nombre" class="form-control" placeholder="Nombre completo"
+                                       autocomplete="name" autofocus />
+                            </div>
+                            <span asp-validation-for="Input.Nombre" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Input.Email" class="form-control" placeholder="tu@correo.com"
+                                       autocomplete="email" />
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input asp-for="Input.Password" class="form-control" placeholder="Minimo 8 caracteres"
+                                       autocomplete="new-password" />
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-accent w-100 btn-lg">
+                            <i class="bi bi-person-check me-2"></i>Registrate
+                        </button>
+                    </form>
+
+                    <hr class="my-4" />
+
+                    <p class="text-center mb-0">
+                        <span class="text-body-secondary">Ya tienes una cuenta?</span>
+                        <a class="fw-semibold link-underline" asp-page="/Login">Inicia sesion</a>
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center mt-3 mb-0">
+                <a class="link-underline" asp-page="/Home">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al inicio
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

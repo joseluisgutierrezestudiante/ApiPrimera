@@ -1,0 +1,17 @@
+Repositorio: https://github.com/joseluisgutierrezestudiante/ApiPrimera.git
+Autor: Joseluis Gutiérrez Machado (entrega individual)
+
+Descripción: Taller 3 - API REST de productos con ASP.NET Core, Entity Framework Core y MySQL,
+con imágenes en Cloudinary y un frontend en Razor Pages que consume esa misma API.
+
+Cómo ejecutar:
+1. dotnet restore
+2. Configurar la cadena de conexión con user-secrets (ver README).
+3. dotnet ef database update
+4. dotnet run
+
+Pruebas: 71 pruebas en verde con dotnet test (no requieren MySQL).
+
+Nota: no se incluyen credenciales reales. La conexión se configura con user-secrets;
+Cloudinary es opcional. Si no se configura, la app guarda la URL de origen de las imágenes
+del catálogo de ejemplo.

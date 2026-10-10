@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ApiPrimera.csproj" />
+  <Project Path="ApiPrimera.Tests/ApiPrimera.Tests.csproj" />
+</Solution>

@@ -1,0 +1,86 @@
+@ApiPrimera_HostAddress = http://localhost:5069
+
+@host = {{ApiPrimera_HostAddress}}
+
+### Listar productos (con filtros opcionales)
+GET {{host}}/api/producto
+Accept: application/json
+
+### Solo productos de una marca
+GET {{host}}/api/producto?marca=Toyota
+Accept: application/json
+
+### Buscar por texto
+GET {{host}}/api/producto?busqueda=hibrido
+Accept: application/json
+
+### Marcas disponibles (alimenta los filtros del catalogo)
+GET {{host}}/api/producto/filtros/marcas
+Accept: application/json
+
+### Categorias disponibles
+GET {{host}}/api/producto/filtros/categorias
+Accept: application/json
+
+### Detalle de un producto
+GET {{host}}/api/producto/1
+Accept: application/json
+
+### Crear un producto
+POST {{host}}/api/producto
+Content-Type: application/json
+
+{
+  "nombre": "Kia Sportage",
+  "descripcion": "SUV compacto del 2024",
+  "marca": "Kia",
+  "categoria": "SUV",
+  "anio": 2024,
+  "kilometraje": 8200,
+  "combustible": "Hibrido",
+  "transmision": "Automatica",
+  "color": "Blanco",
+  "precio": 78500000,
+  "precioOriginal": 82000000,
+  "stock": 4,
+  "destacado": false
+}
+
+### Actualizar un producto (el PUT no cambia la imagen)
+PUT {{host}}/api/producto/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nombre": "Toyota Corolla Cross Hybrid XLE",
+  "descripcion": "SUV compacto hybrid con traccion integral",
+  "marca": "Toyota",
+  "categoria": "SUV",
+  "anio": 2024,
+  "kilometraje": 12400,
+  "combustible": "Hibrido",
+  "transmision": "Automatica",
+  "color": "Blanco perla",
+  "precio": 96400000,
+  "precioOriginal": 102000000,
+  "stock": 4,
+  "destacado": true
+}
+
+### Subir imagen como archivo
+POST {{host}}/api/producto/1/imagen
+Content-Type: multipart/form-data
+
+### Subir imagen en base64
+POST {{host}}/api/producto/1/imagen
+Content-Type: application/json
+
+{
+  "imagenBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+}
+
+### Quitar la imagen (tambien la borra de Cloudinary)
+DELETE {{host}}/api/producto/1/imagen
+
+### Eliminar un producto
+DELETE {{host}}/api/producto/1
